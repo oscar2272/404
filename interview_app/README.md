@@ -1,6 +1,6 @@
 # interview_app
 
-A new Flutter project.
+it mock interview project.
 
 ## Getting Started
 
