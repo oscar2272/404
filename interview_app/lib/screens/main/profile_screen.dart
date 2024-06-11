@@ -1,6 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:interview_app/screens/system/edit_profile_screen.dart';
 import 'package:interview_app/widgets/setting_quota_widget.dart';
-import 'package:pie_chart/pie_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,51 +13,68 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late List<_ChartData> data;
+  late List<_ChartData> data2;
+  late TooltipBehavior _tooltip;
   bool showSettings = false;
   double _goalValue = 50.0;
   @override
   Widget build(BuildContext context) {
-    Map<String, double> dataMap = {
-      "지식/기술": 2,
-      "태도": 1,
-      "인성역량": 1,
-      "개인배경": 1,
-      "진정성": 1,
-      "기타": 1,
-    };
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
+    final List<_ChartData> data = [
+      _ChartData(
+          '지식/기술', 35, const Color.fromARGB(235, 193, 191, 219)), // 지식/기술
+      _ChartData('태도', 28, const Color.fromARGB(236, 182, 142, 166)), // 태도
+      _ChartData('인성역량', 34, const Color.fromARGB(239, 219, 234, 150)), // 인성역량
+      _ChartData('개인배경', 32, const Color.fromARGB(255, 255, 255, 255)), // 개인배경
+      _ChartData('진정성', 40, const Color.fromARGB(238, 43, 85, 114)), // 진정성
+      _ChartData(
+        '기타',
+        40,
+        const Color.fromARGB(255, 169, 185, 236),
+      ), // 진정성
+    ];
+
+    _tooltip = TooltipBehavior(enable: true);
     return Padding(
-      padding: const EdgeInsets.only(top: 40, left: 40, right: 40),
+      padding: EdgeInsets.only(
+          top: height * 40 / 932,
+          left: width * 40 / 430,
+          right: width * 40 / 430),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               CircleAvatar(
-                radius: 45, // 원의 반지름 설정
+                radius: width * 45 / 430, // 원의 반지름 설정
                 foregroundColor: Colors.black,
-                foregroundImage: AssetImage('assets/the1975.jpg'), // 이미지 경로 설정
+                foregroundImage:
+                    const AssetImage('assets/the1975.jpg'), // 이미지 경로 설정
               ),
               SizedBox(
-                width: 10,
+                width: width * 10 / 430,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Sim_77님",
-                    style: TextStyle(fontSize: 26),
+                    style: TextStyle(fontSize: width * 26 / 430),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: height * 7 / 932),
                   Text(
                     "sim77@naver.com",
-                    style: TextStyle(fontSize: 15),
+                    style: TextStyle(fontSize: width * 15 / 430),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(
-            height: 40,
+          SizedBox(
+            height: height * 40 / 932,
           ),
           OutlinedButton.icon(
             icon: const Icon(
@@ -71,82 +91,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               padding: MaterialStateProperty.all<EdgeInsetsGeometry?>(
-                const EdgeInsets.symmetric(
-                  horizontal: 110,
-                  vertical: 15,
+                EdgeInsets.symmetric(
+                  horizontal: width * 110 / 430,
+                  vertical: height * 15 / 932,
                 ),
               ),
             ),
-            onPressed: () {},
-            label: const Text(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen(),
+                ),
+              );
+            },
+            label: Text(
               "프로필 편집",
               style: TextStyle(
-                  fontSize: 16, color: Color.fromARGB(255, 65, 22, 22)),
+                  fontSize: width * 16 / 430,
+                  color: const Color.fromARGB(255, 65, 22, 22)),
             ),
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: height * 20 / 932,
           ),
-          PieChart(
-            colorList: const [
-              Color.fromARGB(235, 193, 191, 219),
-              Color.fromARGB(236, 182, 142, 166),
-              Color.fromARGB(239, 219, 234, 150),
-              Color.fromARGB(255, 255, 255, 255),
-              Color.fromARGB(238, 43, 85, 114),
-              Color.fromARGB(255, 169, 185, 236),
-            ],
-            gradientList: const [
-              [
-                Color.fromARGB(235, 193, 191, 219),
-                Color.fromARGB(255, 170, 168, 196)
+          SizedBox(
+            height: height * 270 / 932,
+            child: SfCartesianChart(
+              primaryXAxis: const CategoryAxis(),
+              primaryYAxis:
+                  const NumericAxis(minimum: 0, maximum: 100, interval: 20),
+              tooltipBehavior: _tooltip,
+              series: <CartesianSeries<_ChartData, String>>[
+                ColumnSeries<_ChartData, String>(
+                  dataSource: data,
+                  xValueMapper: (_ChartData data, _) => data.x,
+                  yValueMapper: (_ChartData data, _) => data.y,
+                  name: 'Gold',
+                  color: const Color.fromRGBO(8, 142, 255, 1),
+                  pointColorMapper: (_ChartData data, _) => data.color,
+                )
               ],
-              [
-                Color.fromARGB(236, 182, 142, 166),
-                Color.fromARGB(255, 161, 120, 145)
-              ],
-              [
-                Color.fromARGB(239, 219, 234, 150),
-                Color.fromARGB(255, 198, 213, 128)
-              ],
-              [
-                Color.fromARGB(255, 255, 255, 255),
-                Color.fromARGB(255, 230, 230, 230)
-              ],
-              [
-                Color.fromARGB(238, 43, 85, 114),
-                Color.fromARGB(255, 20, 60, 90)
-              ],
-              [
-                Color.fromARGB(255, 169, 185, 236),
-                Color.fromARGB(255, 148, 165, 215)
-              ],
-            ],
-            dataMap: dataMap,
-            emptyColor: const Color.fromARGB(255, 0, 0, 0),
-            animationDuration: const Duration(milliseconds: 400),
-            initialAngleInDegree: -90,
-            chartLegendSpacing: 50,
-            chartRadius: MediaQuery.of(context).size.width / 2,
-            chartType: ChartType.disc,
-            legendOptions: const LegendOptions(
-              showLegendsInRow: false,
-              legendPosition: LegendPosition.right,
-              showLegends: true,
-              legendTextStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            chartValuesOptions: const ChartValuesOptions(
-              showChartValueBackground: false,
-              showChartValues: true,
-              showChartValuesInPercentage: true,
-              showChartValuesOutside: false,
-              decimalPlaces: 1,
             ),
           ),
-          const SizedBox(
-            height: 50,
+          SizedBox(
+            height: height * 10 / 932,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -159,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   });
                 },
                 child: Container(
-                  height: 50,
+                  height: height * 50 / 932,
                   decoration: BoxDecoration(
                     color: const Color(0xFFf2f3f8),
                     border: Border(
@@ -171,14 +160,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: width * 12 / 430,
                       ),
-                      const Expanded(
+                      Expanded(
                         child: Text(
                           '하루목표량 설정',
                           style: TextStyle(
-                            fontSize: 18.0,
+                            fontSize: width * 18.0 / 430,
                           ),
                         ),
                       ),
@@ -206,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                       )
                     : Container(
-                        height: 101,
+                        height: height * 101 / 932,
                         //margin: const EdgeInsets.only(top: 10),
                         decoration: const BoxDecoration(
                           color: Color.fromARGB(255, 242, 243, 247),
@@ -215,39 +204,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 BorderSide(color: Color(0xFFE6E8F0), width: 1),
                           ),
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              height: 11.5,
+                              height: height * 11.5 / 932,
                             ),
                             Row(
                               children: [
                                 SizedBox(
-                                  width: 12,
+                                  width: width * 12 / 430,
                                 ),
                                 SizedBox(
-                                  width: 240,
+                                  width: width * 240 / 430,
                                   child: Text('내가 답변한 질문의 개수: 32개',
-                                      style: TextStyle(fontSize: 18.0)),
+                                      style: TextStyle(
+                                          fontSize: width * 18.0 / 430)),
                                 ),
                               ],
                             ),
-                            Divider(
+                            const Divider(
                               color: Color(0xFFE6E8F0),
                             ),
                             Row(
                               children: [
                                 SizedBox(
-                                  width: 12,
+                                  width: width * 12 / 430,
                                 ),
                                 Text('내가 선호하는 질문은 지식/기술입니다.',
-                                    style: TextStyle(fontSize: 18.0)),
+                                    style: TextStyle(
+                                        fontSize: width * 18.0 / 430)),
                               ],
                             ),
                             SizedBox(
-                              height: 11.5,
+                              height: height * 11.5 / 932,
                             ),
                           ],
                         ),
@@ -259,4 +250,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+}
+
+class _ChartData {
+  _ChartData(this.x, this.y, this.color);
+  final Color color;
+  final String x;
+  final double y;
 }

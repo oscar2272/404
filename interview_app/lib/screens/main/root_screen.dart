@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:interview_app/screens/home_screen.dart';
-import 'package:interview_app/screens/interviewlist_screen.dart';
-import 'package:interview_app/screens/log_interview_screen.dart';
-import 'package:interview_app/screens/profile_screen.dart';
+import 'package:interview_app/screens/main/home_screen.dart';
+import 'package:interview_app/screens/main/interviewlist_screen.dart';
+import 'package:interview_app/screens/main/log_interview_screen.dart';
+import 'package:interview_app/screens/main/profile_screen.dart';
 import 'package:interview_app/widgets/menu_bar_widget.dart';
 
 class RootScreen extends StatefulWidget {
@@ -30,16 +30,17 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
+      backgroundColor: const Color.fromRGBO(242, 243, 247, 1),
       appBar: AppBar(
+        scrolledUnderElevation: 0.0,
         backgroundColor: const Color.fromARGB(255, 242, 243, 247),
         leading: Builder(
           builder: (context) => IconButton(
             onPressed: () => Scaffold.of(context).openDrawer(),
-            icon: const Icon(
+            icon: Icon(
               Icons.menu_rounded,
-              color: Color.fromARGB(255, 46, 34, 4),
-              size: 50,
+              color: const Color.fromARGB(255, 46, 34, 4),
+              size: MediaQuery.of(context).size.width * 50 / 430,
             ),
           ),
         ),
@@ -55,7 +56,7 @@ class _RootScreenState extends State<RootScreen> {
         ),
         child: BottomNavigationBar(
           backgroundColor: const Color(0xFFfbfbfb),
-          iconSize: 33,
+          iconSize: MediaQuery.of(context).size.width * 33 / 430,
           type: BottomNavigationBarType.fixed,
           showSelectedLabels: true,
           showUnselectedLabels: false,
@@ -75,7 +76,7 @@ class _RootScreenState extends State<RootScreen> {
               label: "문제풀기",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.import_contacts_outlined),
+              icon: Icon(Icons.drive_file_rename_outline_outlined),
               label: "모의면접",
             ),
             BottomNavigationBarItem(

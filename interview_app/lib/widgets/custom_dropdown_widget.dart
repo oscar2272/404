@@ -30,6 +30,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return DropdownButtonHideUnderline(
       child: SizedBox(
         width: widget.buttonSize,
@@ -42,7 +43,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                   child: Text(
                     item,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: width * 14 / 430,
                       color: _selectLabel == item ? Colors.blue : Colors.black,
                     ),
                   ),
@@ -57,7 +58,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
             widget.onChanged(value);
           },
           customButton: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: width * 16 / 430),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
             ),
@@ -66,14 +67,14 @@ class _CustomDropDownState extends State<CustomDropDown> {
               children: [
                 Text(
                   widget.label,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(225, 255, 255, 255),
+                  style: TextStyle(
+                    fontSize: width * 16 / 430,
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
                 const Icon(
                   Icons.arrow_drop_down,
-                  color: Color.fromARGB(255, 76, 80, 98),
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ],
             ),

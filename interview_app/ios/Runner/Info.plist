@@ -44,6 +44,12 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+	<true/>	
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to the camera to upload images.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to the photo library to upload images.</string>
+	<key>NSMicrophoneUsageDescription</key> 
+	<string>describe why your app needs access to the microphone, if you intend to record videos. This is called Privacy - Microphone Usage Description in the visual editor</string>
 </dict>
 </plist>

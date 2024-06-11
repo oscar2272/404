@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:interview_app/screens/system/qna_screen.dart';
 import 'package:interview_app/screens/login_screen.dart';
+import 'package:interview_app/screens/system/settings_screen.dart';
 
 class Menu extends StatelessWidget {
   const Menu({super.key});
@@ -19,9 +21,6 @@ class Menu extends StatelessWidget {
             accountEmail: Text('sim77@naver.com'),
             decoration: BoxDecoration(
               color: Color.fromARGB(255, 90, 97, 132),
-              // borderRadius: const BorderRadius.only(
-              //     bottomLeft: Radius.circular(40.0),
-              //     bottomRight: Radius.circular(40.0)),
             ),
           ),
           ListTile(
@@ -30,7 +29,14 @@ class Menu extends StatelessWidget {
               color: Colors.grey[850],
             ),
             title: const Text('Setting'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: ((context) => const SettingScreen()),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: Icon(
@@ -38,12 +44,19 @@ class Menu extends StatelessWidget {
               color: Colors.grey[850],
             ),
             title: const Text('Q&A'),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: ((context) => const QnaScreen()),
+                ),
+              );
+            },
           ),
           const Divider(
-            // Divider 추가
-            color: Colors.grey, // Divider의 색상 설정
-            thickness: 1, // Divider의 두께 설정
+            color: Colors.grey,
+            thickness: 1,
           ),
           ListTile(
             leading: Icon(

@@ -12,11 +12,14 @@ class LogContainer extends StatelessWidget {
       required this.textColor});
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      width: 150,
-      height: 150,
-      margin: const EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: width * 15 / 430),
+      width: width * 150 / 430,
+      height: height * 20 / 932,
+      margin: EdgeInsets.symmetric(
+          horizontal: width * 10 / 430, vertical: height * 10 / 932),
       decoration: BoxDecoration(
         color: color,
         boxShadow: [
@@ -36,8 +39,8 @@ class LogContainer extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const SizedBox(
-            height: 35,
+          SizedBox(
+            height: height * 35 / 932,
           ),
           Row(
             children: [
@@ -46,20 +49,20 @@ class LogContainer extends StatelessWidget {
               //   height: 26,
               //   width: 26,
               // ),
-              const SizedBox(
-                width: 7,
+              SizedBox(
+                width: width * 7 / 430,
               ),
               Text(
                 category,
                 style: TextStyle(
                     color: textColor,
-                    fontSize: 18,
+                    fontSize: width * 18 / 430,
                     fontWeight: FontWeight.w600),
               ),
             ],
           ),
-          const SizedBox(
-            height: 60,
+          SizedBox(
+            height: height * 60 / 932,
           ),
           LinearProgressIndicator(
             borderRadius: BorderRadius.circular(6),
@@ -67,7 +70,7 @@ class LogContainer extends StatelessWidget {
             valueColor: const AlwaysStoppedAnimation<Color>(
                 Color.fromARGB(255, 116, 161, 225)),
             backgroundColor: const Color.fromARGB(255, 241, 237, 251),
-            minHeight: 17,
+            minHeight: height * 20 / 932,
           )
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interview_app/screens/interview/chat_interview_screen.dart';
 import 'package:interview_app/widgets/custom_dropdown_widget.dart';
 
 class InterviewListScreen extends StatefulWidget {
@@ -48,8 +49,11 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: width * 8.0 / 430, vertical: height * 8 / 932),
       child: Column(
         children: [
           SingleChildScrollView(
@@ -60,7 +64,8 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                 upperCategories.length,
                 (index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: width * 8.0 / 430),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
                       onTap: () {
@@ -71,15 +76,16 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                         });
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
+                        padding: EdgeInsets.symmetric(
+                            vertical: height * 8 / 932,
+                            horizontal: width * 16 / 430),
                         decoration: BoxDecoration(
-                          boxShadow: const [
+                          boxShadow: [
                             BoxShadow(
-                              color: Color.fromARGB(255, 242, 235, 235),
+                              color: const Color.fromARGB(255, 242, 235, 235),
                               blurRadius: 1.0,
                               spreadRadius: 0.0,
-                              offset: Offset(0, 3),
+                              offset: Offset(0, height * 3 / 932),
                             )
                           ],
                           borderRadius: BorderRadius.circular(12),
@@ -108,19 +114,20 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
               ),
             ),
           ),
-          const SizedBox(
-            height: 60,
+          SizedBox(
+            height: height * 60 / 932,
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: lowerCategories[selectedUpperCategoryIndex].isEmpty
-                  ? [Container(height: 40)]
+                  ? [Container(height: height * 40 / 932)]
                   : List.generate(
                       lowerCategories[selectedUpperCategoryIndex].length,
                       (index) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: width * 8.0 / 430),
                           child: ChoiceChip(
                             side: BorderSide.none,
                             shape: RoundedRectangleBorder(
@@ -138,7 +145,7 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                                 fontWeight: _selections[index]
                                     ? FontWeight.w600
                                     : FontWeight.w500,
-                                fontSize: 15,
+                                fontSize: width * 15 / 430,
                               ),
                             ),
                             selected: _selections[index],
@@ -159,12 +166,26 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
             ),
           ),
           Container(
-            height: 65,
-            margin: const EdgeInsets.only(
-              top: 10,
+            padding: EdgeInsets.only(bottom: height * 5 / 932),
+            height: height * 70 / 932,
+            margin: EdgeInsets.only(
+              top: height * 10 / 932,
             ),
             decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 23, 24, 30),
+                border: Border(
+                  bottom: BorderSide(width: width * 0.3 / 430),
+                ),
+                //color: Colors.white,
+                color: const Color.fromARGB(255, 242, 243, 247),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(
+                        0, height * 3 / 932), // changes position of shadow
+                  ),
+                ],
                 borderRadius: BorderRadius.circular(5)),
             child: Row(
               children: [
@@ -177,20 +198,20 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                     });
                   },
                   label: solved,
-                  buttonSize: 100,
+                  buttonSize: width * 100 / 430,
                 ),
-                const SizedBox(
-                  width: 70,
+                SizedBox(
+                  width: width * 70 / 430,
                 ),
-                const Text(
+                Text(
                   "제목",
                   style: TextStyle(
-                    color: Color.fromARGB(225, 255, 255, 255),
-                    fontSize: 16,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                    fontSize: width * 16 / 430,
                   ),
                 ),
-                const SizedBox(
-                  width: 95,
+                SizedBox(
+                  width: width * 95 / 430,
                 ),
                 CustomDropDown(
                   labelItems: bookmarkItems,
@@ -201,7 +222,7 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                     });
                   },
                   label: bookmark,
-                  buttonSize: 120,
+                  buttonSize: width * 120 / 430,
                 ),
               ],
             ),
@@ -211,7 +232,7 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
               itemCount: 100,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  height: 65,
+                  height: height * 65 / 932,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
@@ -219,39 +240,68 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 1.5,
                         blurRadius: 5,
-                        offset:
-                            const Offset(5, 3), // changes position of shadow
+                        offset: Offset(
+                          width * 5 / 430,
+                          height * 3 / 932,
+                        ), // changes position of shadow
                       ),
                     ],
                   ),
                   child: Row(
                     //mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        width: 10,
+                      SizedBox(
+                        width: width * 10 / 430,
                       ),
                       Checkbox(
                         value: checkbox[index],
                         onChanged: null,
                       ),
-                      const SizedBox(
-                        width: 50,
+                      SizedBox(
+                        width: width * 40 / 430,
                       ),
-                      const Text("QUESTION TITLE"), //question_title
-                      const SizedBox(
-                        width: 105,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isMarkedList[index] = !isMarkedList[index];
-                          });
-                        },
-                        icon: isMarkedList[index]
-                            ? const Icon(Icons.bookmark_outlined)
-                            : const Icon(
-                                Icons.bookmark_border_outlined,
+                      Expanded(
+                        child: TextButton(
+                          style: const ButtonStyle(
+                              alignment: Alignment.centerLeft),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ChatInterviewScreen(),
                               ),
+                            );
+                          },
+                          child: const Text(
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            "QUESTION TITLE@@@@@@@@@@@",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: width * 10 / 430,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: width * 30 / 430),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isMarkedList[index] = !isMarkedList[index];
+                            });
+                          },
+                          icon: isMarkedList[index]
+                              ? Icon(
+                                  Icons.bookmark_outlined,
+                                  size: width * 30 / 430,
+                                )
+                              : Icon(
+                                  Icons.bookmark_border_outlined,
+                                  size: width * 30 / 430,
+                                ),
+                        ),
                       ),
                     ],
                   ),
@@ -260,7 +310,7 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
               separatorBuilder: (BuildContext context, int index) {
                 return Container(
                   color: Colors.grey.withOpacity(0.2), // 구분선의 배경색 설정
-                  height: 1, // 구분선의 높이
+                  height: height * 1 / 932, // 구분선의 높이
                 );
               },
             ),

@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen>
     "푼문제": 24,
   };
   final colorList = <Color>[
-    Colors.greenAccent,
+    const Color.fromARGB(255, 125, 166, 204),
   ];
   final List<Color> logContainerColorList = const [
     Color.fromARGB(235, 193, 191, 219), // 지식/기술
@@ -49,27 +49,30 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+      padding: EdgeInsets.symmetric(
+          horizontal: width * 10 / 430, vertical: height * 30 / 932),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Row(
+          Row(
             children: [
               SizedBox(
-                width: 25,
+                width: width * 25 / 430,
               ),
               Text(
                 "Quota",
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: width * 22 / 430,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.start,
               ),
             ],
           ),
-          const SizedBox(height: 30),
+          SizedBox(height: height * 30 / 932),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -79,9 +82,9 @@ class _HomeScreenState extends State<HomeScreen>
                   Row(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        height: 70,
-                        width: 5,
+                        margin: EdgeInsets.only(right: width * 10 / 430),
+                        height: height * 70 / 932,
+                        width: width * 5 / 430,
                         decoration: BoxDecoration(
                           color: const Color(0xFF87A0E5).withOpacity(0.5),
                           borderRadius:
@@ -89,18 +92,22 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("하루 목표량"),
+                          const Text(
+                            "하루 목표량",
+                            textAlign: TextAlign.start,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Image.asset(
                                 "assets/flag.png",
                               ),
-                              const SizedBox(
-                                width: 57,
-                                child: Text(
+                              SizedBox(
+                                width: width * 57 / 430,
+                                child: const Text(
                                   "50문제",
                                   textAlign: TextAlign.end,
                                 ),
@@ -111,15 +118,15 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: height * 20 / 932,
                   ),
                   Row(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        height: 70,
-                        width: 5,
+                        margin: EdgeInsets.only(right: width * 10 / 430),
+                        height: height * 70 / 932,
+                        width: width * 5 / 430,
                         decoration: BoxDecoration(
                           color: const Color(0xFFF56E98).withOpacity(0.5),
                           borderRadius:
@@ -129,16 +136,16 @@ class _HomeScreenState extends State<HomeScreen>
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("오늘 푼 문제"),
+                          const Text("오늘 푼 문제", textAlign: TextAlign.start),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Image.asset(
                                 "assets/fire.png",
                               ),
-                              const SizedBox(
-                                width: 57,
-                                child: Text(
+                              SizedBox(
+                                width: width * 57 / 430,
+                                child: const Text(
                                   "24문제",
                                   textAlign: TextAlign.end,
                                 ),
@@ -152,24 +159,25 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ),
               SizedBox(
-                width: 200,
-                height: 200,
+                width: width * 200 / 430,
+                height: height * 200 / 932,
                 child: PieChart(
                   dataMap: dataMap,
                   degreeOptions:
                       const DegreeOptions(totalDegrees: 360, initialAngle: 270),
                   animationDuration: const Duration(milliseconds: 2000),
                   chartType: ChartType.ring,
-                  chartRadius: 130,
+                  chartRadius: width * 130 / 430,
                   baseChartColor: const Color(0xFFe2e6ed),
-                  gradientList: const [
-                    [
-                      Color.fromARGB(255, 240, 160, 89),
-                      Color.fromARGB(250, 230, 150, 80),
-                      Color.fromARGB(245, 220, 140, 71),
-                      Color.fromARGB(240, 210, 130, 62),
-                    ],
-                  ],
+                  emptyColor: Colors.blue,
+                  // gradientList: const [
+                  //   [
+                  //     // Color.fromARGB(255, 240, 160, 89),
+                  //     // Color.fromARGB(250, 230, 150, 80),
+                  //     // Color.fromARGB(245, 220, 140, 71),
+                  //     // Color.fromARGB(240, 210, 130, 62),
+                  //   ],
+                  // ],
                   colorList: colorList,
                   totalValue: 50.0, //
                   chartValuesOptions: const ChartValuesOptions(
@@ -177,20 +185,21 @@ class _HomeScreenState extends State<HomeScreen>
                     showChartValues: false,
                   ),
                   legendOptions: const LegendOptions(showLegends: false),
-                  centerWidget: const Column(
+                  centerWidget: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         '목표량',
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: width * 20 / 430,
+                            fontWeight: FontWeight.bold),
                       ),
                       Text(
                         '24/50',
                         style: TextStyle(
-                            fontSize: 20,
+                            fontSize: width * 20 / 430,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF6161a1)),
+                            color: const Color(0xFF6161a1)),
                       ),
                     ],
                   ),
@@ -199,44 +208,40 @@ class _HomeScreenState extends State<HomeScreen>
             ],
           ),
           const Divider(),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: height * 20 / 932,
           ),
-          const Row(
+          Row(
             children: [
               SizedBox(
-                width: 25,
+                width: width * 25 / 430,
               ),
               Text(
-                "Log ",
+                "Log",
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: width * 22 / 430,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 30),
-          Row(
-            children: [
-              SizedBox(
-                height: 280,
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 6,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: LogContainer(index,
-                          color: logContainerColorList[index],
-                          category: logContainerCategoryList[index],
-                          textColor: logContainerTextColor[index]),
-                    );
-                  },
-                ),
-              ),
-            ],
+          SizedBox(height: height * 30 / 932),
+          SizedBox(
+            height: height * 260 / 932,
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 6,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: width * 10.0 / 430),
+                  child: LogContainer(index,
+                      color: logContainerColorList[index],
+                      category: logContainerCategoryList[index],
+                      textColor: logContainerTextColor[index]),
+                );
+              },
+            ),
           )
         ],
       ),

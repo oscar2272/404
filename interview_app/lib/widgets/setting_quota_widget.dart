@@ -12,8 +12,9 @@ class SettingQuota extends StatelessWidget {
   final ValueChanged<double> onChanged;
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Container(
-      width: 400,
+      width: width * 400 / 430,
       color: const Color(0xFFf2f3f8),
       child: Column(
         children: [
@@ -29,24 +30,20 @@ class SettingQuota extends StatelessWidget {
             onChanged: onChanged,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Text(
-                '목표량: ',
-                style: TextStyle(fontSize: 18),
-              ),
-              Expanded(
+              Center(
                 child: Text(
-                  '${goalValue.round()}',
-                  style: const TextStyle(fontSize: 18),
+                  '목표량: ${goalValue.round()}',
+                  style: TextStyle(fontSize: width * 18 / 430),
                 ),
               ),
-              const SizedBox(
-                width: 20,
+              SizedBox(
+                width: width * 50 / 430,
               ),
               ElevatedButton(
                 onPressed: onClose,
-                child: const Text('save'),
+                child: const Text('저장'),
               ),
             ],
           ),
