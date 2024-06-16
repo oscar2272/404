@@ -211,7 +211,7 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                   ),
                 ),
                 SizedBox(
-                  width: width * 95 / 430,
+                  width: width * 90 / 430,
                 ),
                 CustomDropDown(
                   labelItems: bookmarkItems,

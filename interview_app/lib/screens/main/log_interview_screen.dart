@@ -22,7 +22,7 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
         children: [
           Container(
             clipBehavior: Clip.hardEdge,
-            height: height * 200 / 932,
+            height: height * 210 / 932,
             width: width * 350 / 430,
             padding: EdgeInsets.symmetric(horizontal: width * 10 / 430),
             decoration: BoxDecoration(
@@ -47,13 +47,14 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Row(
                   children: [
                     Column(
                       children: [
                         Transform.scale(
-                          scale: 3.5,
+                          scale: 3.3,
                           child: Transform.translate(
                             offset: Offset(width * 10 / 430, height * 5 / 932),
                             child: Opacity(
@@ -79,9 +80,10 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                             Row(
                               children: [
                                 SizedBox(
-                                  width: width * 20 / 430,
+                                  width: width * 10 / 430,
                                 ),
                                 PopupMenuButton<String>(
+                                  icon: const Icon(Icons.more_horiz_outlined),
                                   iconSize: width * 35 / 430,
                                   iconColor: Colors.white,
                                   onSelected: (String value) {
@@ -157,7 +159,7 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                                 "이어서 하기",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: width * 16 / 430,
+                                    fontSize: width * 15 / 430,
                                     fontWeight: FontWeight.w600),
                               ),
                               Icon(
@@ -191,7 +193,7 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                                 "새 면접 ",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: width * 16 / 430,
+                                    fontSize: width * 15 / 430,
                                     fontWeight: FontWeight.w600),
                               ),
                               Icon(

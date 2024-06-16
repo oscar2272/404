@@ -51,8 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               CircleAvatar(
                 radius: width * 45 / 430, // 원의 반지름 설정
                 foregroundColor: Colors.black,
-                foregroundImage:
-                    const AssetImage('assets/the1975.jpg'), // 이미지 경로 설정
+                backgroundImage: const AssetImage('assets/the1975.jpg'),
               ),
               SizedBox(
                 width: width * 10 / 430,
@@ -113,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           SizedBox(
-            height: height * 20 / 932,
+            height: height * 30 / 932,
           ),
           SizedBox(
             height: height * 270 / 932,
@@ -195,7 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                       )
                     : Container(
-                        height: height * 101 / 932,
+                        height: height * 105 / 932,
                         //margin: const EdgeInsets.only(top: 10),
                         decoration: const BoxDecoration(
                           color: Color.fromARGB(255, 242, 243, 247),
