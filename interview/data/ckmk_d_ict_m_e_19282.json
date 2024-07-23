@@ -1,0 +1,60 @@
+{
+    "version": "1.0",
+    "dataSet": {
+        "info": {
+            "date": "20230116",
+            "occupation": "ICT",
+            "channel": "MOCK",
+            "place": "ONLINE",
+            "gender": "MALE",
+            "ageRange": "45-54",
+            "experience": "EXPERIENCED"
+        },
+        "question": {
+            "raw": {
+                "text": "본인은 팀장 성향인지 팀원 성향인지 말씀해 주세요",
+                "wordCount": 7
+            },
+            "emotion": [],
+            "intent": []
+        },
+        "answer": {
+            "raw": {
+                "text": "저는 앞서 말씀드렸던 것처럼 작은 조직에서 일을 해 왔기 때문에 리더십을 발휘해야 되는 팀장 역할을 해오기도 했지만 그전에는 뭐 행정 지원 역할도 해왔었고 팀원으로서 팔로잉 하거나 서포팅 하는 역할에 어떤 집중을 해야 되는 역할을 수행하기도 했습니다. 그래서 두 가지 성향을 모두 다 갖추고 있다고 생각을 하는데요. 그럼에도 불구하고 단계적 관점에서 봤을 때는 제가 수행해야 될 부분이 리더의 역할을 해야 되는 것은 뭐 당연한 것 같고요. 다만 그 수행하는 과정에서 다양한 직급에서 역할을 경험을 하다 보면 뭐 팀원인데 리더십의 역할을 침해할 수도 있고 아니면 리더십인데 너무 불필요하게 실무적 수준에서 관여를 할 수도 있다고 생각을 합니다. 이 부분은 어떤 약점으로 이게 확대될 수 있기 때문에 조심하려고 노력을 하고 있구요. 다만 뭐 리더십의 심정을 팀원으로서 이해하고 또 반대의 경우가 있을 텐데 이런 부분에 있어서는 강점을 가지고 있지 않나 생각을 합니다.",
+                "wordCount": 127
+            },
+            "emotion": [],
+            "intent": [
+                {
+                    "text": "",
+                    "expression": "",
+                    "category": "attitude"
+                }
+            ],
+            "summary": {
+                "text": "저는 작은 조직에서 일해 왔기 때문에 리더십 발휘를 위한 팀장 역할과 팀원으로서 팔로잉 또는 서포팅하는 역할에 집중해야 되는 역할 모두 갖추고 있습니다. 하지만 다양한 직급에서 역할을 수행하다 보면 팀원에게 리더십 침해나 실무적 수준의 관여를 할 수 있어서 이 부분에 대해서는 조심할 것이고 리더십의 심정 이해에 강점을 가질 것입니다.",
+                "wordCount": 48
+            }
+        }
+    },
+    "rawDataInfo": {
+        "question": {
+            "fileFormat": "wav",
+            "fileSize": 199118,
+            "duration": 6220,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/Experienced/ckmk_q_ict_m_e_19282.wav"
+        },
+        "answer": {
+            "fileFormat": "wav",
+            "fileSize": 2527438,
+            "duration": 78980,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/Experienced/ckmk_a_ict_m_e_19282.wav"
+        }
+    }
+}

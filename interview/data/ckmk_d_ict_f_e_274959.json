@@ -1,0 +1,60 @@
+{
+    "version": "1.0",
+    "dataSet": {
+        "info": {
+            "date": "20230116",
+            "occupation": "ICT",
+            "channel": "MOCK",
+            "place": "ONLINE",
+            "gender": "FEMALE",
+            "ageRange": "55-",
+            "experience": "EXPERIENCED"
+        },
+        "question": {
+            "raw": {
+                "text": "최근 가장 재미있게 하고 있는 일이 있다면 그것은 무엇인가요 그리고 그 일이 왜 재미있는지 그 이유도 함께 설명해 주세요",
+                "wordCount": 19
+            },
+            "emotion": [],
+            "intent": []
+        },
+        "answer": {
+            "raw": {
+                "text": "최근에 재미있게 하는 일은 저는 요립니다. 요리 중에서도 김치 담기죠. 제가 나이가 굉장히 많은데도 불구하고 어 바쁘다는 핑계로 항상 김치는 친정에서 받아쓰고 또 누가 주시면 그걸로 먹고 그다음에 또 사서 먹고 예 그랬습니다. 그런데 어 아들이 결혼을 했어요. 어 그런데 어 김치를 담아 줘야 될 거 같은 생각이 들었어요. 그래서 김치 담는 거를 요즘 유튜브로 열심히 보면서 하고 있습니다. 실패 일곱 번 했습니다. 네 음 배추가 절여지지도 않고 음 너무 싱거워지기도 하고 음 어디는 절여지고 어디는 안 절여지고 어 하다가 재료가 떨어져서 다시 사러 가기도 하고 음 너무 짜서 아예 처음부터 못 먹기도 하고 예 그랬습니다. 그런데 재밌습니다. 아 안 해봤던 일이라서 그런지 예 재밌습니다.",
+                "wordCount": 106
+            },
+            "emotion": [],
+            "intent": [
+                {
+                    "text": "",
+                    "expression": "",
+                    "category": "attitude"
+                }
+            ],
+            "summary": {
+                "text": "요즘 재미있게 하는 일은 김치 담기입니다. 아들이 결혼을 해서 김치를 담아야 될 거 같은 생각이 들었고 김치 담는 것을 유튜브로 열심히 보고 있습니다. 실패 일곱 번 했는데도 재밌습니다. 안 해봤던 일이라서 그런지 예 재미있어 보입니다.",
+                "wordCount": 35
+            }
+        }
+    },
+    "rawDataInfo": {
+        "question": {
+            "fileFormat": "wav",
+            "fileSize": 333518,
+            "duration": 10420,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Female/Experienced/ckmk_q_ict_f_e_274959.wav"
+        },
+        "answer": {
+            "fileFormat": "wav",
+            "fileSize": 2298318,
+            "duration": 71820,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Female/Experienced/ckmk_a_ict_f_e_274959.wav"
+        }
+    }
+}

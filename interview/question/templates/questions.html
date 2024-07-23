@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Uploaded Questions</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f4;
+      }
+      .container {
+        margin: 20px;
+      }
+      .delete-button,
+      .fill-other-button {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 데이터베이스 삭제 버튼 -->
+      <form
+        action="{% url 'questions:delete_all' %}"
+        method="post"
+        class="delete-button"
+      >
+        {% csrf_token %}
+        <button type="submit">데이터 전부 삭제</button>
+      </form>
+
+      <!-- 빈칸을 'Other'로 채우는 버튼 -->
+      <form
+        action="{% url 'questions:fill_other' %}"
+        method="post"
+        class="fill-other-button"
+      >
+        {% csrf_token %}
+        <button type="submit">빈공간 기타 추가 'Other'</button>
+      </form>
+
+      <h1>Uploaded Questions</h1>
+
+      <!-- 질문 리스트 -->
+      <table>
+        <thead>
+          <tr>
+            <th>Question Title</th>
+            <th>Category</th>
+            <th>Sub-category</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for question in questions %}
+          <tr>
+            <td>{{ question.question_title }}</td>
+            <td>{{ question.category }}</td>
+            <td>{{ question.sub_category }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3">No questions available.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
