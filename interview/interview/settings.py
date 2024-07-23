@@ -76,7 +76,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "interview.wsgi.application"
 
 
-''' amazon rds db'''
+# amazon rds db
 DATABASES = {
     'default' : {
         'ENGINE' : 'django.db.backends.postgresql' ,
@@ -87,12 +87,8 @@ DATABASES = {
         'PORT' : '5432' ,
     }
 }
-<<<<<<< Updated upstream
-'''git hub test'''
-=======
->>>>>>> Stashed changes
 
-# '''local db'''
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
