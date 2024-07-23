@@ -88,10 +88,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     radius: width * 60 / 430, // 원의 반지름 설정
                     foregroundColor: Colors.black,
 
-                    foregroundImage: image == null
-                        ? FileImage(File(image!.path))
-                        : const AssetImage('assets/the1975.jpg')
-                            as ImageProvider,
+                    foregroundImage: FileImage(File(image!.path)),
                   ),
                   Positioned(
                     bottom: 0,

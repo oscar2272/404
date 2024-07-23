@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:interview_app/screens/main/home_screen.dart';
 import 'package:interview_app/screens/main/interviewlist_screen.dart';
 import 'package:interview_app/screens/main/log_interview_screen.dart';
 import 'package:interview_app/screens/main/profile_screen.dart';
@@ -16,7 +15,6 @@ class _RootScreenState extends State<RootScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const HomeScreen(),
     const InterviewListScreen(),
     const LogInterviewScreen(),
     const ProfileScreen(),
@@ -65,12 +63,6 @@ class _RootScreenState extends State<RootScreen> {
           onTap: _onTapItem,
           selectedItemColor: Colors.lightBlue,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-              ),
-              label: "홈",
-            ),
             BottomNavigationBarItem(
               icon: Icon(Icons.format_list_bulleted_sharp),
               label: "문제풀기",

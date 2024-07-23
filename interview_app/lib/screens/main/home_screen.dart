@@ -170,14 +170,6 @@ class _HomeScreenState extends State<HomeScreen>
                   chartRadius: width * 130 / 430,
                   baseChartColor: const Color(0xFFe2e6ed),
                   emptyColor: Colors.blue,
-                  // gradientList: const [
-                  //   [
-                  //     // Color.fromARGB(255, 240, 160, 89),
-                  //     // Color.fromARGB(250, 230, 150, 80),
-                  //     // Color.fromARGB(245, 220, 140, 71),
-                  //     // Color.fromARGB(240, 210, 130, 62),
-                  //   ],
-                  // ],
                   colorList: colorList,
                   totalValue: 50.0, //
                   chartValuesOptions: const ChartValuesOptions(

@@ -2,33 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:interview_app/widgets/bubble_normal_widget.dart';
 
-class ChatInterviewScreen extends StatefulWidget {
-  const ChatInterviewScreen({super.key});
+class TestInterviewScreen extends StatefulWidget {
+  const TestInterviewScreen({
+    super.key,
+  });
 
   @override
-  State<ChatInterviewScreen> createState() => _ChatInterviewScreenState();
+  State<TestInterviewScreen> createState() => _TestInterviewScreenState();
 }
 
-class _ChatInterviewScreenState extends State<ChatInterviewScreen> {
+class _TestInterviewScreenState extends State<TestInterviewScreen> {
   late bool isMarked = false;
   final scrollController = ScrollController();
 
   List<BubbleNormalWidget> messages = [
     const BubbleNormalWidget(
-      text:
-          "first...................................................................@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@...................................................................@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+      text: "발화의도, 성장가능성, 논리적표현, 인성, 전문지식 5개를 기반으로 평가가 이루어집니다. \n첫번째 질문입니다.",
       isSender: false,
       color: Color(0xFFE8E8EE),
       tail: true,
       textColor: Colors.black,
     ),
     const BubbleNormalWidget(
-      text:
-          "second...................................................................@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+      text: "사용자의 답변..",
       isSender: true,
       color: Color(0xFF1B97F3),
       tail: true,
       textColor: Colors.white,
+    ),
+    const BubbleNormalWidget(
+      text: "이거 적어주셈 ㅋㅋ",
+      isSender: false,
+      color: Color(0xFFE8E8EE),
+      tail: true,
+      textColor: Colors.black,
     ),
   ];
 
@@ -76,7 +83,7 @@ class _ChatInterviewScreenState extends State<ChatInterviewScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 243, 244, 248),
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         toolbarHeight: height * 70 / 932,
@@ -91,56 +98,24 @@ class _ChatInterviewScreenState extends State<ChatInterviewScreen> {
             color: const Color(0xFF586571),
           ),
         ),
-        foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: const Color(0xFF111D27),
+
         elevation: 1,
         shadowColor: Colors.grey.withOpacity(0.5),
+        // spreadRadius: 5,
+        // blurRadius: 7,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              "문제풀기",
+              "모의면접",
               style: TextStyle(
                 fontSize: width * 18 / 430,
-                color: const Color.fromARGB(255, 89, 95, 102),
+                color: const Color.fromARGB(255, 148, 158, 168),
               ),
             ),
-            Icon(
-              Icons.chevron_right_sharp,
-              size: width * 22 / 430,
-              color: const Color.fromARGB(255, 89, 95, 102),
-            ),
-            Text(
-              "i-prg",
-              style: TextStyle(
-                fontSize: width * 18 / 430,
-                color: const Color.fromARGB(255, 89, 95, 102),
-              ),
-            )
           ],
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: width * 20 / 430),
-            child: IconButton(
-              icon: isMarked
-                  ? Icon(
-                      color: const Color.fromARGB(255, 148, 158, 168),
-                      Icons.bookmark_outlined,
-                      size: width * 35 / 430,
-                    )
-                  : Icon(
-                      color: const Color.fromARGB(255, 148, 158, 168),
-                      Icons.bookmark_border_outlined,
-                      size: width * 35 / 430,
-                    ),
-              onPressed: () {
-                setState(() {
-                  isMarked = !isMarked;
-                });
-              },
-            ),
-          ),
-        ],
       ),
       body: GestureDetector(
         onTap: () {

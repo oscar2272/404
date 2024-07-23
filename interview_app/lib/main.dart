@@ -15,21 +15,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    //   print(
-    //       "size: ${MediaQuery.of(context).size}"); //앱 화면 크기 size  Ex> Size(360.0, 692.0)
-    //   print(
-    //       "height: ${MediaQuery.of(context).size.height}"); //앱 화면 높이 double Ex> 692.0
-    //   print(
-    //       "width: ${MediaQuery.of(context).size.width}"); //앱 화면 넓이 double Ex> 360.0
-    //   print(
-    //       "devicePixelRatio: ${MediaQuery.of(context).devicePixelRatio}"); //화면 배율    double Ex> 4.0
-    //   print("padding top: ${MediaQuery.of(context).padding.top}");
-
-    //   print(
-    //       "height: ${MediaQueryData.fromView(WidgetsBinding.instance.window).size.height}");
-    //   print(
-    //       "width: ${MediaQueryData.fromView(WidgetsBinding.instance.window).size.width}");
-
     return MaterialApp(
       builder: (context, child) {
         return MediaQuery(
