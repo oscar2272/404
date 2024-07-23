@@ -14,7 +14,7 @@ class Menu extends StatelessWidget {
         children: <Widget>[
           const UserAccountsDrawerHeader(
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('assets/the1975.jpg'),
+              backgroundImage: AssetImage('assets/profile.png'),
               backgroundColor: Colors.white,
             ),
             accountName: Text('OOO님'),

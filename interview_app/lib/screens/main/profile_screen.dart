@@ -40,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 CircleAvatar(
                   radius: width * 45 / 430, // 원의 반지름 설정
                   foregroundColor: Colors.black,
-                  backgroundImage: const AssetImage('assets/the1975.jpg'),
+                  backgroundImage: const AssetImage('assets/profile.png'),
                 ),
                 SizedBox(
                   width: width * 10 / 430,
