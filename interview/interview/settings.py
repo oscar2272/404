@@ -87,7 +87,10 @@ DATABASES = {
         'PORT' : '5432' ,
     }
 }
+<<<<<<< Updated upstream
 '''git hub test'''
+=======
+>>>>>>> Stashed changes
 
 # '''local db'''
 # DATABASES = {
