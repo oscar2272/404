@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-_fm&c+(_0l4za8f-s_t1*dh9zix5bld)tzu%-bfxui0rl63$-c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -76,29 +76,30 @@ TEMPLATES = [
 WSGI_APPLICATION = "interview.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'dbname',
-#         'HOST': 'host.*******.us-east-1.rds.amazonaws.com',
-#         'PORT': '5432',
-#         'USER': '***',
-#         'PASSWORD': '***'
-#     }
-# }
+''' amazon rds db'''
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'interviewdb',
-        'USER': 'oscar2272',
-        'PASSWORD': 'rhdtkd002',
-        'HOST': 'localhost',
-        'PORT': '5432',
+    'default' : {
+        'ENGINE' : 'django.db.backends.postgresql' ,
+        'NAME' : 'interview_db' ,
+        'USER' : 'oscar2272' ,
+        'PASSWORD' : 'rhdtkd002' ,
+        'HOST' : 'oscar2272-instance.cv6goikis074.ap-northeast-2.rds.amazonaws.com' ,
+        'PORT' : '5432' ,
     }
 }
+'''git hub test'''
+
+# '''local db'''
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'interviewdb',
+#         'USER': 'oscar2272',
+#         'PASSWORD': 'rhdtkd002',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
