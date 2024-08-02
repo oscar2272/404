@@ -1,0 +1,30 @@
+# Ignore environment variables file
+.env
+
+# Python specific ignores
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django specific ignores
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+db.sqlite3-journal
+
+# Ignore static and media files
+/static/
+/media/
+
+# Ignore virtual environment directory
+,venv
+venv/
+.env/
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

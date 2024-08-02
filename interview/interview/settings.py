@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -76,29 +78,30 @@ TEMPLATES = [
 WSGI_APPLICATION = "interview.wsgi.application"
 
 
-# amazon rds db
-DATABASES = {
-    'default' : {
-        'ENGINE' : 'django.db.backends.postgresql' ,
-        'NAME' : 'interview_db' ,
-        'USER' : 'oscar2272' ,
-        'PASSWORD' : 'rhdtkd002' ,
-        'HOST' : 'oscar2272-instance.cv6goikis074.ap-northeast-2.rds.amazonaws.com' ,
-        'PORT' : '5432' ,
-    }
-}
-
-
+# # amazon rds db
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'interviewdb',
-#         'USER': 'oscar2272',
-#         'PASSWORD': 'rhdtkd002',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'NAME': os.getenv("DB_NAME"),
+#         'USER': os.getenv("DB_USER"),
+#         'PASSWORD': os.getenv("DB_PASSWORD"),
+#         'HOST': os.getenv("DB_HOST"),
+#         'PORT': os.getenv("DB_PORT", "5432"),
 #     }
 # }
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'interviewdb',
+        'USER': 'oscar2272',
+        'PASSWORD': 'rhdtkd002',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 
 # Password validation

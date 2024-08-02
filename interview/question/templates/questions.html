@@ -21,8 +21,9 @@
         margin: 20px;
       }
       .delete-button,
-      .fill-other-button {
-        margin-bottom: 20px;
+      .fill-other-button,
+      .delete-form {
+        display: inline; /* Ensure forms are inline for delete buttons */
       }
     </style>
   </head>
@@ -30,7 +31,7 @@
     <div class="container">
       <!-- 데이터베이스 삭제 버튼 -->
       <form
-        action="{% url 'questions:delete_all' %}"
+        action="{% url 'questions:delete_all_questions' %}"
         method="post"
         class="delete-button"
       >
@@ -48,27 +49,44 @@
         <button type="submit">빈공간 기타 추가 'Other'</button>
       </form>
 
-      <h1>Uploaded Questions</h1>
+      <!-- 질문 개수 표시 -->
+      <p>Total Questions: {{ question_count }}</p>
 
       <!-- 질문 리스트 -->
       <table>
         <thead>
           <tr>
+            <th>Question ID</th>
             <th>Question Title</th>
             <th>Category</th>
             <th>Sub-category</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for question in questions %}
           <tr>
+            <td>{{ question.question_id }}</td>
             <td>{{ question.question_title }}</td>
             <td>{{ question.category }}</td>
             <td>{{ question.sub_category }}</td>
+            <td>
+              {% if question.question_id %}
+              <form
+                action="{% url 'questions:delete_question' question.question_id %}"
+                method="post"
+              >
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+              </form>
+              {% else %}
+              <p>No ID available.</p>
+              {% endif %}
+            </td>
           </tr>
           {% empty %}
           <tr>
-            <td colspan="3">No questions available.</td>
+            <td colspan="5">No questions available.</td>
           </tr>
           {% endfor %}
         </tbody>
