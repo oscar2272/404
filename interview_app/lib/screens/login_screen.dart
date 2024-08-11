@@ -165,15 +165,15 @@ class _LoginScreenState extends State<LoginScreen> {
             Center(
               child: ElevatedButton(
                 style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
+                    shape: WidgetStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(8.0), // 모서리 둥근 정도 설정
                       ),
                     ),
-                    backgroundColor: const MaterialStatePropertyAll(
+                    backgroundColor: const WidgetStatePropertyAll(
                         Color.fromARGB(255, 0, 0, 0)),
-                    minimumSize: MaterialStateProperty.all(
+                    minimumSize: WidgetStateProperty.all(
                       const Size(250, 50),
                     )),
                 onPressed: () {

@@ -95,9 +95,15 @@ WSGI_APPLICATION = "interview.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+<<<<<<< Updated upstream
         'NAME': 'interviewdb',
         'USER': 'oscar2272',
         'PASSWORD': 'rhdtkd002',
+=======
+        'NAME': 'interview_db',
+        'USER': 'postgres',
+        'PASSWORD': '4861237',
+>>>>>>> Stashed changes
         'HOST': 'localhost',
         'PORT': '5432',
     }
