@@ -6,7 +6,6 @@ load_dotenv()
 
 api_key = os.getenv('OPENAPI_KEY')
 
-# Initialize the OpenAI client
 client = openai.OpenAI(api_key=api_key)
 
 def delete_all_files():

@@ -12,7 +12,4 @@ urlpatterns = [
     path('delete_all', template_views.delete_all_questions, name='delete_all_questions'),
     path('<int:question_id>/', template_views.delete_question, name='delete_question'),
     path('fill_other/', template_views.fill_empty_fields_with_other, name='fill_other'),
-
-
-
 ]
