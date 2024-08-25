@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:interview_app/provider/user_provider.dart';
 import 'package:interview_app/screens/system/find_id_screen.dart';
 import 'package:interview_app/screens/system/find_password_screen.dart';
 import 'package:interview_app/screens/system/signup_screen.dart';
 import 'package:interview_app/screens/popup_screen.dart';
 import 'package:interview_app/validator/check_validator.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,11 +15,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late UserProvider userState;
+
   final _passwordFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   bool isAutoLogin = false;
   bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    userState = Provider.of<UserProvider>(context, listen: false);
+  }
+
   void onChanged(bool? newValue) {
     setState(() {
       isAutoLogin = newValue ?? false;
@@ -28,6 +41,27 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _obscurePassword = !_obscurePassword;
     });
+  }
+
+  Future<void> _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    bool success = await userState.logIn(email, password);
+    if (!mounted) return;
+    if (success) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PopupScreen(),
+        ),
+        (route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('로그인 실패')),
+      );
+    }
   }
 
   @override
@@ -79,6 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: TextFormField(
                   maxLength: 20,
                   focusNode: _emailFocusNode,
+                  controller: _emailController,
                   decoration: const InputDecoration(
                     fillColor: Colors.white, // Color(0xFFf5f5f5),
                     filled: true,
@@ -108,6 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: height * 60 / 932,
               child: TextFormField(
+                controller: _passwordController,
                 obscureText: _obscurePassword,
                 maxLength: 20,
                 focusNode: _passwordFocusNode,
@@ -165,26 +201,18 @@ class _LoginScreenState extends State<LoginScreen> {
             Center(
               child: ElevatedButton(
                 style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
+                    shape: WidgetStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(8.0), // 모서리 둥근 정도 설정
                       ),
                     ),
-                    backgroundColor: const MaterialStatePropertyAll(
+                    backgroundColor: const WidgetStatePropertyAll(
                         Color.fromARGB(255, 0, 0, 0)),
-                    minimumSize: MaterialStateProperty.all(
+                    minimumSize: WidgetStateProperty.all(
                       const Size(250, 50),
                     )),
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PopupScreen(),
-                    ),
-                    (route) => false,
-                  );
-                },
+                onPressed: _login,
                 child: Text(
                   "로그인",
                   style: TextStyle(

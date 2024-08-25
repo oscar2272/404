@@ -1,9 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:interview_app/provider/user_provider.dart';
 import 'package:interview_app/screens/system/edit_profile_screen.dart';
+import 'package:interview_app/services/exercise_answer_service.dart';
 import 'package:interview_app/widgets/setting_quota_widget.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,20 +16,79 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late UserProvider userState;
   late List<_ChartData> data;
   bool showSettings = false;
+  late int count = 0;
+  late int todayCount = 0;
+  bool result = false;
+  late String mostCategory = '';
   double _goalValue = 50.0;
-  final dataMap = <String, double>{
-    "푼문제": 24,
-  };
+  static const baseUrl = "http://127.0.0.1:8000";
+
   final colorList = <Color>[
     const Color.fromARGB(255, 125, 166, 204),
   ];
+  final Map<String, String> upperCategoryMap = {
+    "지식/기술": "technology",
+    "태도": "attitude",
+    "인성역량": "personality",
+    "개인배경": "background",
+    "진정성": "etc",
+    "기타": "other",
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    userState = Provider.of<UserProvider>(context, listen: false);
+    userState.fetchUserData();
+    _fetchAnsweredCount();
+    _fetchMostCategroy();
+    _goalValue = userState.user!.quota.toDouble();
+  }
+
+  Future<void> _fetchAnsweredCount() async {
+    try {
+      count = await ExerciseAnswerService.answeredCount();
+      todayCount = await ExerciseAnswerService.todayAnsweredCount();
+      setState(() {}); // 상태를 업데이트하여 UI를 새로고침합니다.
+    } catch (e) {
+      // 오류 처리
+    }
+  }
+
+  Future<void> _fetchMostCategroy() async {
+    try {
+      mostCategory = await ExerciseAnswerService.mostAnsweredCategory();
+      final categoryKey = upperCategoryMap.entries
+          .firstWhere((entry) => entry.value == mostCategory,
+              orElse: () => const MapEntry('Unknown', 'Unknown'))
+          .key;
+
+      mostCategory = categoryKey;
+      setState(() {}); // 상태를 업데이트하여 UI를 새로고침합니다.
+    } catch (e) {
+      // 오류 처리
+    }
+  }
+
+  void _openUpdateProfilePage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+    );
+
+    if (result == true) {
+      // 프로필 업데이트가 성공했을 때
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-
     return SingleChildScrollView(
         padding: EdgeInsets.only(
             top: height * 40 / 932,
@@ -40,7 +102,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 CircleAvatar(
                   radius: width * 45 / 430, // 원의 반지름 설정
                   foregroundColor: Colors.black,
-                  backgroundImage: const AssetImage('assets/profile.png'),
+                  backgroundImage:
+                      NetworkImage('$baseUrl${userState.user!.imageUrl}'),
                 ),
                 SizedBox(
                   width: width * 10 / 430,
@@ -49,12 +112,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Sim_77님",
+                      userState.user!.nickname,
                       style: TextStyle(fontSize: width * 26 / 430),
                     ),
                     SizedBox(height: height * 7 / 932),
                     Text(
-                      "sim77@naver.com",
+                      userState.user!.email,
                       style: TextStyle(fontSize: width * 15 / 430),
                     ),
                   ],
@@ -86,12 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const EditProfileScreen(),
-                  ),
-                );
+                _openUpdateProfilePage();
               },
               label: Text(
                 "프로필 편집",
@@ -156,8 +214,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     SizedBox(
                                       width: width * 57 / 430,
-                                      child: const Text(
-                                        "50문제",
+                                      child: Text(
+                                        "${userState.user!.quota}문제",
                                         textAlign: TextAlign.end,
                                       ),
                                     )
@@ -195,8 +253,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     SizedBox(
                                       width: width * 57 / 430,
-                                      child: const Text(
-                                        "24문제",
+                                      child: Text(
+                                        todayCount.toString(),
                                         textAlign: TextAlign.end,
                                       ),
                                     )
@@ -212,7 +270,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       width: width * 200 / 430,
                       height: height * 200 / 932,
                       child: PieChart(
-                        dataMap: dataMap,
+                        dataMap: <String, double>{
+                          "푼문제": todayCount.toDouble(),
+                        },
                         degreeOptions: const DegreeOptions(
                             totalDegrees: 360, initialAngle: 270),
                         animationDuration: const Duration(milliseconds: 2000),
@@ -221,7 +281,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         baseChartColor: const Color(0xFFe2e6ed),
                         emptyColor: Colors.blue,
                         colorList: colorList,
-                        totalValue: 50.0, //
+                        totalValue: userState.user!.quota.toDouble(), //
                         chartValuesOptions: const ChartValuesOptions(
                           showChartValuesInPercentage: false,
                           showChartValues: false,
@@ -237,7 +297,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '24/50',
+                              '$todayCount/${userState.user!.quota}',
                               style: TextStyle(
                                   fontSize: width * 20 / 430,
                                   fontWeight: FontWeight.bold,
@@ -334,7 +394,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       SizedBox(
                                         width: width * 240 / 430,
-                                        child: Text('내가 답변한 질문의 개수: 32개',
+                                        child: Text('내가 답변한 질문의 개수: $count',
                                             style: TextStyle(
                                                 fontSize: width * 18.0 / 430)),
                                       ),
@@ -348,7 +408,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       SizedBox(
                                         width: width * 12 / 430,
                                       ),
-                                      Text('내가 선호하는 질문은 지식/기술입니다.',
+                                      Text('내가 선호하는 질문은 $mostCategory입니다.',
                                           style: TextStyle(
                                               fontSize: width * 18.0 / 430)),
                                     ],

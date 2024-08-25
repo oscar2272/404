@@ -24,7 +24,6 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("예를 누르면 기존의 면접은 종료됩니다."),
               Text("그래도 하시겠습니까?"),

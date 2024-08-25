@@ -11,6 +11,7 @@ from question.models import Question
 class UserManager(BaseUserManager):
     """Manager for users."""
 
+    use_in_migrations = True
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('Users must have an email address')

@@ -1,0 +1,76 @@
+{
+    "version": "1.0",
+    "dataSet": {
+        "info": {
+            "date": "20230116",
+            "occupation": "ICT",
+            "channel": "MOCK",
+            "place": "ONLINE",
+            "gender": "MALE",
+            "ageRange": "-34",
+            "experience": "NEW"
+        },
+        "question": {
+            "raw": {
+                "text": "귀하께서 최근 관심을 가지고 있는 아이티 분야가 있다면 어 어떤 쪽인지 말씀해 주시고 그것에 거기에 관심이 있는 이유를 설명해 주세요",
+                "wordCount": 20
+            },
+            "emotion": [],
+            "intent": []
+        },
+        "answer": {
+            "raw": {
+                "text": "어 최근 관심을 두고 있는 아이티 분야는 어 아시겠지만 메타버스라는 기술력에 좀 최근에는 좀 관심을 갖고 있고요. 어 관심을 갖게 되 갖게 된 계기는 어 최근에 이제 어 메타버스를 활용한 채 채용 박람회를 좀 참여를 한 적이 있습니다. 어 어 그 박람회는 제가 이제 아바타 형식으로 좀 웹에 접근을 해서 어 여러 가지 회사가 섹터별로 좀 나눠져 있고요. 그 섹터별로 제가 직접 찾아가서 채용 담당자라는 얘기를 하고 어떤 직무에 대해서 그리고 회사에 대해서 어 직접적으로 질문했었던 그 경험이 앞으로 좀 아이티 분야가 어 비대면 형식으로 변하겠구나 라고 좀 파악을 좀 하게 되었구요. 어 앞으로 저희 회사가 재택근무를 좀 도입을 한다면 이 메타버스 기술을 활용을 좀 해서 원격 근무가 좀 용이할 수 있도록 어 진행이 된다면 참 괜찮을 것 같다 라는 생각을 좀 갖고 있습니다.",
+                "wordCount": 124
+            },
+            "emotion": [
+                {
+                    "text": "어 최근 관심을 두고 있는 아이티 분야는 어 아시겠지만 메타버스라는 기술력에 좀 최근에는 좀 관심을 갖고 있고요.",
+                    "expression": "p-interest",
+                    "category": "positive"
+                }
+            ],
+            "intent": [
+                {
+                    "text": "어 최근 관심을 두고 있는 아이티 분야는 어 아시겠지만 메타버스라는 기술력에 좀 최근에는 좀 관심을 갖고 있고요.",
+                    "expression": "i_tech_orien",
+                    "category": "attitude"
+                },
+                {
+                    "text": "어 관심을 갖게 되 갖게 된 계기는 어 최근에 이제 어 메타버스를 활용한 채 채용 박람회를 좀 참여를 한 적이 있습니다.",
+                    "expression": "i_tech_orien",
+                    "category": "attitude"
+                },
+                {
+                    "text": "그 섹터별로 제가 직접 찾아가서 채용 담당자라는 얘기를 하고 어떤 직무에 대해서 그리고 회사에 대해서 어 직접적으로 질문했었던 그 경험이 앞으로 좀 아이티 분야가 어 비대면 형식으로 변하겠구나 라고 좀 파악을 좀 하게 되었구요.",
+                    "expression": "i_tech_orien",
+                    "category": "attitude"
+                }
+            ],
+            "summary": {
+                "text": "최근 관심 분야인 아이티 분야에 메타버스라는 기술력에 관심을 갖고 있습니다. 메타버스를 활용한 채용 박람회에 참여해서 비대면 형식으로 변화하리라 파악을 했습니다. 회사 차원에서 재택근무를 도입한다면 이 메타버스 기술을 활용해서 원격 근무가 용이할 수 있었으면 합니다.",
+                "wordCount": 34
+            }
+        }
+    },
+    "rawDataInfo": {
+        "question": {
+            "fileFormat": "wav",
+            "fileSize": 473678,
+            "duration": 14800,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/New/ckmk_q_ict_m_n_431512.wav"
+        },
+        "answer": {
+            "fileFormat": "wav",
+            "fileSize": 2257358,
+            "duration": 70540,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/New/ckmk_a_ict_m_n_431512.wav"
+        }
+    }
+}

@@ -1,0 +1,66 @@
+{
+    "version": "1.0",
+    "dataSet": {
+        "info": {
+            "date": "20230116",
+            "occupation": "ICT",
+            "channel": "MOCK",
+            "place": "ONLINE",
+            "gender": "MALE",
+            "ageRange": "35-44",
+            "experience": "EXPERIENCED"
+        },
+        "question": {
+            "raw": {
+                "text": "회사에 입사를 하고 난 후에 사내 스터디를 만들 수 있다면 사내 스터디를 만들어서 어떤 공부가 하고 싶으신가요 그 공부를 하고 싶은 이유도 함께 말씀해 주시기 바랍니다",
+                "wordCount": 26
+            },
+            "emotion": [],
+            "intent": []
+        },
+        "answer": {
+            "raw": {
+                "text": "어 각기 다른 분야 다른 분야에 있는 그 타 팀원들과 함께 콜라보레이션을 하면서 사내 스터디를 만들 기회가 주어진다면 저는 각자의 업무가 아닌 어 가 공통 분야 즉 이 세상을 살아가면서 진정 필요한 것이 실리적으로 뭐가 필요한지를 따져봐서 그런 쪽으로 스터디를 하면 좋을 것 같다고 생각을 했고요. 어 실제로도 지금 현재 직장에서도 아 그 저희는 경제 동아리를 만들어서 그 어 요즘 최근에 이런 금융 이슈들과 그 우리나라의 경제 세계 경제 그리고 어떤 것들이 또 이 경제적 자유에 도달하기 위한 어떤 방법들이 있는지 이런 것들을 서로 공유함으로써 실질적으로 아 이 살아감에 있어서 필요한 것들을 함께 스터디하고 고민하는 시간을 갖고 있습니다. 예 저는 제 지금 동아리 운영 정책이나 방향성에 대해서도 굉장히 만족하고 있구요. 어 실제로 제가 이직하려는 회사에서도 이 동아리에 조인할 수 있게 되는 그런 기회가 된다면 경제 동아리를 같이 함께 운영해 보고 싶습니다.",
+                "wordCount": 131
+            },
+            "emotion": [
+                {
+                    "text": "예 저는 제 지금 동아리 운영 정책이나 방향성에 대해서도 굉장히 만족하고 있구요.",
+                    "expression": "p-happiness",
+                    "category": "positive"
+                }
+            ],
+            "intent": [
+                {
+                    "text": "어 실제로도 지금 현재 직장에서도 아 그 저희는 경제 동아리를 만들어서 그 어 요즘 최근에 이런 금융 이슈들과 그 우리나라의 경제 세계 경제 그리고 어떤 것들이 또 이 경제적 자유에 도달하기 위한 어떤 방법들이 있는지 이런 것들을 서로 공유함으로써 실질적으로 아 이 살아감에 있어서 필요한 것들을 함께 스터디하고 고민하는 시간을 갖고 있습니다.",
+                    "expression": "c_imp",
+                    "category": "personality"
+                }
+            ],
+            "summary": {
+                "text": "각기 다른 분야에 있는 타 팀원들과 함께 사내 스터디를 만들 기회가 있다면, 저는 각자의 업무가 아닌 이 세상을 살아가면서 진정 필요한 것이 실리적으로 뭐가 있는지를 따져봤으면 좋겠습니다. 실제로도 경제 동아리를 만들어서 경제적 자유를 얻기 위한 방법들을 공유하고 있습니다.",
+                "wordCount": 38
+            }
+        }
+    },
+    "rawDataInfo": {
+        "question": {
+            "fileFormat": "wav",
+            "fileSize": 555598,
+            "duration": 17360,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/Experienced/ckmk_q_ict_m_e_298684.wav"
+        },
+        "answer": {
+            "fileFormat": "wav",
+            "fileSize": 2673358,
+            "duration": 83540,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/Experienced/ckmk_a_ict_m_e_298684.wav"
+        }
+    }
+}

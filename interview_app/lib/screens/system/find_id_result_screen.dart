@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
-class FindIdResultScreen extends StatelessWidget {
-  const FindIdResultScreen({super.key});
+class FindIdResultScreen extends StatefulWidget {
+  final String email;
 
+  const FindIdResultScreen({super.key, required this.email});
+
+  @override
+  State<FindIdResultScreen> createState() => _FindIdResultScreenState();
+}
+
+class _FindIdResultScreenState extends State<FindIdResultScreen> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -33,7 +40,7 @@ class FindIdResultScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "oscar2272@naver.com",
+                        widget.email,
                         style: TextStyle(
                             fontSize: width * 18 / 430,
                             color: const Color(0xFF305AAA)),

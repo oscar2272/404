@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interview_app/screens/main/root_screen.dart';
-import 'package:interview_app/screens/system/chage_password_screen.dart';
+import 'package:interview_app/screens/system/aaaa_password_screen.dart';
 import 'package:interview_app/widgets/setting_tile_widget.dart';
 
 class SettingScreen extends StatelessWidget {

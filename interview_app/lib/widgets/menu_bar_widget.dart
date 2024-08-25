@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:interview_app/provider/user_provider.dart';
 import 'package:interview_app/screens/system/qna_screen.dart';
 import 'package:interview_app/screens/login_screen.dart';
 import 'package:interview_app/screens/system/settings_screen.dart';
+import 'package:provider/provider.dart';
 
-class Menu extends StatelessWidget {
+class Menu extends StatefulWidget {
   const Menu({super.key});
+
+  @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
+  late final UserProvider userState;
+  static const baseUrl = "http://127.0.0.1:8000";
+
+  @override
+  void initState() {
+    super.initState();
+
+    userState = Provider.of<UserProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +29,15 @@ class Menu extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const UserAccountsDrawerHeader(
+          UserAccountsDrawerHeader(
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('assets/profile.png'),
+              backgroundImage:
+                  NetworkImage('$baseUrl${userState.user!.imageUrl}'),
               backgroundColor: Colors.white,
             ),
-            accountName: Text('OOO님'),
-            accountEmail: Text('sim77@naver.com'),
-            decoration: BoxDecoration(
+            accountName: Text(userState.user!.nickname),
+            accountEmail: Text(userState.user!.email),
+            decoration: const BoxDecoration(
               color: Color.fromARGB(255, 90, 97, 132),
             ),
           ),
@@ -64,13 +82,22 @@ class Menu extends StatelessWidget {
               color: Colors.grey[850],
             ),
             title: const Text('Logout'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );
+            onTap: () async {
+              bool loggedOut = await userState.logout();
+              if (loggedOut) {
+                Navigator.pushReplacement(
+                  // ignore: use_build_context_synchronously
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                );
+              } else {
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('로그아웃 실패')),
+                );
+              }
             },
           ),
         ],

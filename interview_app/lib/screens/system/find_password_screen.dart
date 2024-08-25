@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interview_app/screens/system/chage_password_screen.dart';
+import 'package:interview_app/services/user_service.dart';
 import 'package:interview_app/validator/check_validator.dart';
 
 class FindPasswordScreen extends StatelessWidget {
@@ -10,7 +10,7 @@ class FindPasswordScreen extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     final emailFocusNode = FocusNode();
-
+    final TextEditingController emailController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: const Text("비밀번호 찾기"),
@@ -41,6 +41,7 @@ class FindPasswordScreen extends StatelessWidget {
             SizedBox(
               height: height * 60 / 932,
               child: TextFormField(
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   maxLength: 20,
                   focusNode: emailFocusNode,
@@ -59,12 +60,8 @@ class FindPasswordScreen extends StatelessWidget {
             Center(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ChangePasswordScreen(),
-                    ),
-                  );
+                  UserService.requestResetPassword(
+                      context, emailController.text);
                 },
                 child: Container(
                   alignment: Alignment.center,

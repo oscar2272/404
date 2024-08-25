@@ -17,13 +17,17 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
-
+from interview.views import GetCSRFTokenView
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
-
+ #127.0.0.1/
     path("questions/", include("question.urls")),
     path("user/", include("user.urls")),
     path("exerciseAnswer/", include("exercise_answer.urls")),
     path("mockInterviewAnswer/", include("mock_interview_answer.urls")),
     path("logMockInterview/", include("log_mock_interview.urls")),
-]
+
+    path('get_csrf_token/',GetCSRFTokenView.as_view()),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

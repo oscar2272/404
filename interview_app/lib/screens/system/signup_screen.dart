@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:interview_app/provider/user_provider.dart';
 import 'package:interview_app/screens/main/root_screen.dart';
 import 'package:interview_app/validator/check_validator.dart';
+import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -10,18 +12,93 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final _passwordFocusNode = FocusNode();
-  final _passwordCorrectFocusNode = FocusNode();
-  final emailFocusNode = FocusNode();
-  final nicknameFocusNode = FocusNode();
+  late final UserProvider userState;
+
+  final _emailController = TextEditingController();
+  final _nicknameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _nicknameFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
+
+  String? _emailError;
+  String? _nicknameError;
+  String? _passwordError;
+  String? _confirmPasswordError;
 
   bool _obscurePassword = true;
-  bool _obscureCorrectPassword = true;
+  bool _obscureConfirmPassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    userState = Provider.of<UserProvider>(context, listen: false);
+  }
+
+  void _validateEmail(String value) {
+    setState(() {
+      _emailError = CheckValidate().validateEmail(_emailFocusNode, value);
+    });
+  }
+
+  void _validateNickname(String value) {
+    setState(() {
+      _nicknameError =
+          CheckValidate().validateNickname(_nicknameFocusNode, value);
+    });
+  }
+
+  void _validatePassword(String value) {
+    setState(() {
+      _passwordError =
+          CheckValidate().validatePassword(_passwordFocusNode, value);
+    });
+  }
+
+  void _validateConfirmPassword(String value) {
+    setState(() {
+      _confirmPasswordError = CheckValidate()
+          .confirmPasswordValidator(value, _passwordController.text);
+    });
+  }
+
+  void _submitForm() async {
+    if (_emailError == null &&
+        _nicknameError == null &&
+        _passwordError == null &&
+        _confirmPasswordError == null) {
+      // Extract user input
+      String email = _emailController.text.trim();
+      String nickname = _nicknameController.text.trim();
+      String password = _passwordController.text.trim();
+
+      // Call the signup service
+      bool isSuccess = await userState.signUp(email, nickname, password);
+      if (!mounted) return;
+      if (isSuccess) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const RootScreen(),
+          ),
+          (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('회원가입에 실패했습니다. 다시 시도해주세요.')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("회원가입"),
@@ -45,28 +122,29 @@ class _SignupScreenState extends State<SignupScreen> {
                   color: const Color.fromARGB(255, 0, 0, 0),
                 ),
                 onTap: () {
-                  FocusScope.of(context).requestFocus(emailFocusNode);
+                  FocusScope.of(context).requestFocus(_emailFocusNode);
                 },
               ),
             ),
             SizedBox(
-              height: height * 60 / 932,
-              child: TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  maxLength: 20,
-                  focusNode: emailFocusNode,
-                  decoration: const InputDecoration(
-                    fillColor: Colors.white, // Color(0xFFf5f5f5),
-                    filled: true,
-                    border: OutlineInputBorder(),
-                    counterText: "",
-                  ),
-                  validator: (value) =>
-                      CheckValidate().validateEmail(emailFocusNode, value!)),
+              height: height * 70 / 932,
+              child: TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                maxLength: 20,
+                focusNode: _emailFocusNode,
+                decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: const OutlineInputBorder(),
+                  counterText: "",
+                  errorText: _emailError,
+                  errorStyle: TextStyle(height: height * 0.1 / 932),
+                ),
+                onChanged: _validateEmail,
+              ),
             ),
-            SizedBox(
-              height: height * 20 / 932,
-            ),
+            SizedBox(height: height * 20 / 932),
             Opacity(
               opacity: 0.75,
               child: SelectableText(
@@ -77,28 +155,28 @@ class _SignupScreenState extends State<SignupScreen> {
                   color: const Color.fromARGB(255, 0, 0, 0),
                 ),
                 onTap: () {
-                  FocusScope.of(context).requestFocus(nicknameFocusNode);
+                  FocusScope.of(context).requestFocus(_nicknameFocusNode);
                 },
               ),
             ),
             SizedBox(
-              height: height * 60 / 932,
-              child: TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  maxLength: 20,
-                  focusNode: nicknameFocusNode,
-                  decoration: const InputDecoration(
-                    fillColor: Colors.white, // Color(0xFFf5f5f5),
-                    filled: true,
-                    border: OutlineInputBorder(),
-                    counterText: "",
-                  ),
-                  validator: (value) => CheckValidate()
-                      .validateNickname(nicknameFocusNode, value!)),
+              height: height * 70 / 932,
+              child: TextField(
+                controller: _nicknameController,
+                maxLength: 20,
+                focusNode: _nicknameFocusNode,
+                decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: const OutlineInputBorder(),
+                  counterText: "",
+                  errorText: _nicknameError,
+                  errorStyle: TextStyle(height: height * 0.1 / 932),
+                ),
+                onChanged: _validateNickname,
+              ),
             ),
-            SizedBox(
-              height: height * 20 / 932,
-            ),
+            SizedBox(height: height * 20 / 932),
             Opacity(
               opacity: 0.75,
               child: SelectableText(
@@ -114,13 +192,14 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             SizedBox(
-              height: height * 60 / 932,
-              child: TextFormField(
+              height: height * 85 / 932,
+              child: TextField(
+                controller: _passwordController,
                 obscureText: _obscurePassword,
                 maxLength: 20,
                 focusNode: _passwordFocusNode,
                 decoration: InputDecoration(
-                  fillColor: Colors.white, //const Color(0xFFf5f5f5),
+                  fillColor: Colors.white,
                   filled: true,
                   border: const OutlineInputBorder(),
                   counterText: "",
@@ -136,14 +215,14 @@ class _SignupScreenState extends State<SignupScreen> {
                       });
                     },
                   ),
+                  errorText: _passwordError,
+                  errorStyle: TextStyle(
+                      height: height * 1 / 932, overflow: TextOverflow.fade),
                 ),
-                validator: (value) => CheckValidate()
-                    .validatePassword(_passwordFocusNode, value!),
+                onChanged: _validatePassword,
               ),
             ),
-            SizedBox(
-              height: height * 20 / 932,
-            ),
+            SizedBox(height: height * 10 / 932),
             Opacity(
               opacity: 0.75,
               child: SelectableText(
@@ -155,52 +234,44 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 onTap: () {
                   FocusScope.of(context)
-                      .requestFocus(_passwordCorrectFocusNode);
+                      .requestFocus(_confirmPasswordFocusNode);
                 },
               ),
             ),
             SizedBox(
-              height: height * 60 / 932,
-              child: TextFormField(
-                obscureText: _obscureCorrectPassword,
+              height: height * 70 / 932,
+              child: TextField(
+                controller: _confirmPasswordController,
+                obscureText: _obscureConfirmPassword,
                 maxLength: 20,
-                focusNode: _passwordCorrectFocusNode,
+                focusNode: _confirmPasswordFocusNode,
                 decoration: InputDecoration(
-                  fillColor: Colors.white, //const Color(0xFFf5f5f5),
+                  fillColor: Colors.white,
                   filled: true,
                   border: const OutlineInputBorder(),
                   counterText: "",
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureCorrectPassword
+                      _obscureConfirmPassword
                           ? Icons.visibility
                           : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
-                        _obscureCorrectPassword = !_obscureCorrectPassword;
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
                       });
                     },
                   ),
+                  errorText: _confirmPasswordError,
+                  errorStyle: TextStyle(height: height * 0.1 / 932),
                 ),
-                validator: (value) => CheckValidate()
-                    .confirmPasswordValidator(_passwordFocusNode, value!),
+                onChanged: _validateConfirmPassword,
               ),
             ),
-            SizedBox(
-              height: height * 40 / 932,
-            ),
+            SizedBox(height: height * 40 / 932),
             Center(
               child: GestureDetector(
-                onTap: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RootScreen(),
-                    ),
-                    (route) => false,
-                  );
-                },
+                onTap: _submitForm,
                 child: Container(
                   alignment: Alignment.center,
                   width: width * 200 / 430,
@@ -219,9 +290,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              height: height * 60 / 932,
-            ),
+            SizedBox(height: height * 60 / 932),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

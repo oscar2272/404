@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interview_app/screens/system/find_id_result_screen.dart';
+import 'package:interview_app/services/user_service.dart';
 import 'package:interview_app/validator/check_validator.dart';
 
 class FindIdScreen extends StatelessWidget {
@@ -10,6 +11,38 @@ class FindIdScreen extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     final nicknameFocusNode = FocusNode();
+    final nicknameController = TextEditingController();
+
+    Future<void> findUserAndNavigate(
+        BuildContext context, TextEditingController nicknameController) async {
+      if (nicknameController.text.isNotEmpty) {
+        // 닉네임이 입력된 경우 사용자 찾기 요청
+        String? email =
+            await UserService.findUserByNickname(nicknameController.text);
+
+        if (email != null) {
+          Navigator.push(
+            // ignore: use_build_context_synchronously
+            context,
+            MaterialPageRoute(
+              builder: (context) => FindIdResultScreen(
+                email: email, // 이메일 결과를 넘깁니다.
+              ),
+            ),
+          );
+        } else {
+          // 이메일 찾기에 실패한 경우 사용자에게 알림 표시
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('찾고 계시는 이메일이 없습니다.')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('닉네임을 입력해 주세요.')),
+        );
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -42,6 +75,7 @@ class FindIdScreen extends StatelessWidget {
               height: height * 60 / 932,
               child: TextFormField(
                   keyboardType: TextInputType.emailAddress,
+                  controller: nicknameController,
                   maxLength: 20,
                   focusNode: nicknameFocusNode,
                   decoration: const InputDecoration(
@@ -58,14 +92,7 @@ class FindIdScreen extends StatelessWidget {
             ),
             Center(
               child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const FindIdResultScreen(),
-                    ),
-                  );
-                },
+                onTap: () => findUserAndNavigate(context, nicknameController),
                 child: Container(
                   alignment: Alignment.center,
                   width: width * 200 / 430,

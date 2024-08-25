@@ -5,3 +5,4 @@ class Question(models.Model):
     category = models.CharField(max_length=20)
     sub_category = models.CharField(max_length=20)
     question_title = models.CharField(max_length=255)
+    file_name = models.CharField(max_length=255)

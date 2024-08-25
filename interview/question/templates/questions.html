@@ -60,6 +60,7 @@
             <th>Question Title</th>
             <th>Category</th>
             <th>Sub-category</th>
+            <th>file_name</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -70,6 +71,7 @@
             <td>{{ question.question_title }}</td>
             <td>{{ question.category }}</td>
             <td>{{ question.sub_category }}</td>
+            <td>{{ question.file_name}}</td>
             <td>
               {% if question.question_id %}
               <form

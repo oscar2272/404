@@ -13,6 +13,7 @@ class TestInterviewScreen extends StatefulWidget {
 
 class _TestInterviewScreenState extends State<TestInterviewScreen> {
   late bool isMarked = false;
+  late bool showMessageBar;
   final scrollController = ScrollController();
 
   List<BubbleNormalWidget> messages = [
@@ -43,45 +44,45 @@ class _TestInterviewScreenState extends State<TestInterviewScreen> {
   @override
   void initState() {
     super.initState();
+    showMessageBar = (messages.length != 3);
     messages = messages.reversed.toList(); // 초기화 단계에서 리스트를 역순으로 변환
+  }
+
+  void updateUI() {
+    setState(() {
+      showMessageBar = messages.length != 3;
+    });
+  }
+
+  void addMessage(BubbleNormalWidget message) {
+    messages = messages.reversed.toList();
+
+    messages.add(message);
+    setState(() {
+      messages = messages.reversed.toList();
+    });
+    scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+
+    updateUI();
+  }
+
+  void deleteMessage() {
+    messages = messages.reversed.toList();
+    messages.removeLast();
+
+    setState(() {
+      messages = messages.reversed.toList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    bool showMessageBar = (messages.length != 3);
-
-    void updateUI() {
-      setState(() {
-        showMessageBar = messages.length != 3;
-      });
-    }
-
-    void addMessage(BubbleNormalWidget message) {
-      messages = messages.reversed.toList();
-
-      messages.add(message);
-      setState(() {
-        messages = messages.reversed.toList();
-      });
-      scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-
-      updateUI();
-    }
-
-    void deleteMessage() {
-      messages = messages.reversed.toList();
-      messages.removeLast();
-
-      setState(() {
-        messages = messages.reversed.toList();
-      });
-    }
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 242, 243, 247),

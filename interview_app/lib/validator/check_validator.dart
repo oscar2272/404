@@ -37,11 +37,11 @@ class CheckValidate {
     }
   }
 
-  String? confirmPasswordValidator(FocusNode focusNode, String? confirmPw) {
+  String? confirmPasswordValidator(String? confirmPw, String password) {
     if (confirmPw == null || confirmPw.isEmpty) {
       return '비밀번호를 다시 입력해주세요.';
     }
-    if (confirmPw != focusNode.toString()) {
+    if (confirmPw != password) {
       return '비밀번호가 일치하지 않습니다.';
     }
     return null;
