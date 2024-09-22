@@ -55,6 +55,7 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _passwordError =
           CheckValidate().validatePassword(_passwordFocusNode, value);
+      _validateConfirmPassword(_confirmPasswordController.text); // 추가됨
     });
   }
 
@@ -76,9 +77,9 @@ class _SignupScreenState extends State<SignupScreen> {
       String password = _passwordController.text.trim();
 
       // Call the signup service
-      bool isSuccess = await userState.signUp(email, nickname, password);
+      String message = await userState.signUp(email, nickname, password);
       if (!mounted) return;
-      if (isSuccess) {
+      if (message == "회원가입 성공") {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -88,7 +89,7 @@ class _SignupScreenState extends State<SignupScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('회원가입에 실패했습니다. 다시 시도해주세요.')),
+          SnackBar(content: Text(message)),
         );
       }
     }
@@ -103,212 +104,214 @@ class _SignupScreenState extends State<SignupScreen> {
       appBar: AppBar(
         title: const Text("회원가입"),
       ),
-      body: Padding(
-        padding: EdgeInsets.only(
-            top: height * 100 / 932,
-            left: width * 60 / 430,
-            right: width * 60 / 430,
-            bottom: height * 50 / 932),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Opacity(
-              opacity: 0.75,
-              child: SelectableText(
-                '이메일',
-                style: TextStyle(
-                  fontSize: width * 16 / 430,
-                  fontWeight: FontWeight.bold,
-                  color: const Color.fromARGB(255, 0, 0, 0),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+              top: height * 80 / 932,
+              left: width * 60 / 430,
+              right: width * 60 / 430,
+              bottom: height * 0 / 932),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Opacity(
+                opacity: 0.75,
+                child: SelectableText(
+                  '이메일',
+                  style: TextStyle(
+                    fontSize: width * 16 / 430,
+                    fontWeight: FontWeight.bold,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                  ),
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(_emailFocusNode);
+                  },
                 ),
-                onTap: () {
-                  FocusScope.of(context).requestFocus(_emailFocusNode);
-                },
               ),
-            ),
-            SizedBox(
-              height: height * 70 / 932,
-              child: TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                maxLength: 20,
-                focusNode: _emailFocusNode,
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: const OutlineInputBorder(),
-                  counterText: "",
-                  errorText: _emailError,
-                  errorStyle: TextStyle(height: height * 0.1 / 932),
+              SizedBox(
+                height: height * 80 / 932,
+                child: TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  maxLength: 20,
+                  focusNode: _emailFocusNode,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: const OutlineInputBorder(),
+                    counterText: "",
+                    errorText: _emailError,
+                    errorStyle: TextStyle(height: height * 1 / 932),
+                  ),
+                  onChanged: _validateEmail,
                 ),
-                onChanged: _validateEmail,
               ),
-            ),
-            SizedBox(height: height * 20 / 932),
-            Opacity(
-              opacity: 0.75,
-              child: SelectableText(
-                '닉네임',
-                style: TextStyle(
-                  fontSize: width * 16 / 430,
-                  fontWeight: FontWeight.bold,
-                  color: const Color.fromARGB(255, 0, 0, 0),
+              SizedBox(height: height * 20 / 932),
+              Opacity(
+                opacity: 0.75,
+                child: SelectableText(
+                  '닉네임',
+                  style: TextStyle(
+                    fontSize: width * 16 / 430,
+                    fontWeight: FontWeight.bold,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                  ),
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(_nicknameFocusNode);
+                  },
                 ),
-                onTap: () {
-                  FocusScope.of(context).requestFocus(_nicknameFocusNode);
-                },
               ),
-            ),
-            SizedBox(
-              height: height * 70 / 932,
-              child: TextField(
-                controller: _nicknameController,
-                maxLength: 20,
-                focusNode: _nicknameFocusNode,
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: const OutlineInputBorder(),
-                  counterText: "",
-                  errorText: _nicknameError,
-                  errorStyle: TextStyle(height: height * 0.1 / 932),
+              SizedBox(
+                height: height * 80 / 932,
+                child: TextField(
+                  controller: _nicknameController,
+                  maxLength: 20,
+                  focusNode: _nicknameFocusNode,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: const OutlineInputBorder(),
+                    counterText: "",
+                    errorText: _nicknameError,
+                    errorStyle: TextStyle(height: height * 1 / 932),
+                  ),
+                  onChanged: _validateNickname,
                 ),
-                onChanged: _validateNickname,
               ),
-            ),
-            SizedBox(height: height * 20 / 932),
-            Opacity(
-              opacity: 0.75,
-              child: SelectableText(
-                '비밀번호',
-                style: TextStyle(
-                  color: const Color.fromARGB(255, 0, 0, 0),
-                  fontSize: width * 16 / 430,
-                  fontWeight: FontWeight.bold,
+              SizedBox(height: height * 20 / 932),
+              Opacity(
+                opacity: 0.75,
+                child: SelectableText(
+                  '비밀번호',
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                    fontSize: width * 16 / 430,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  },
                 ),
-                onTap: () {
-                  FocusScope.of(context).requestFocus(_passwordFocusNode);
-                },
               ),
-            ),
-            SizedBox(
-              height: height * 85 / 932,
-              child: TextField(
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                maxLength: 20,
-                focusNode: _passwordFocusNode,
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: const OutlineInputBorder(),
-                  counterText: "",
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+              SizedBox(
+                height: height * 80 / 932,
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  maxLength: 20,
+                  focusNode: _passwordFocusNode,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: const OutlineInputBorder(),
+                    counterText: "",
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
+                    errorText: _passwordError,
+                    errorStyle: TextStyle(
+                        height: height * 1 / 932, overflow: TextOverflow.fade),
                   ),
-                  errorText: _passwordError,
-                  errorStyle: TextStyle(
-                      height: height * 1 / 932, overflow: TextOverflow.fade),
+                  onChanged: _validatePassword,
                 ),
-                onChanged: _validatePassword,
               ),
-            ),
-            SizedBox(height: height * 10 / 932),
-            Opacity(
-              opacity: 0.75,
-              child: SelectableText(
-                '비밀번호 확인',
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+              SizedBox(height: height * 20 / 932),
+              Opacity(
+                opacity: 0.75,
+                child: SelectableText(
+                  '비밀번호 확인',
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onTap: () {
+                    FocusScope.of(context)
+                        .requestFocus(_confirmPasswordFocusNode);
+                  },
                 ),
-                onTap: () {
-                  FocusScope.of(context)
-                      .requestFocus(_confirmPasswordFocusNode);
-                },
               ),
-            ),
-            SizedBox(
-              height: height * 70 / 932,
-              child: TextField(
-                controller: _confirmPasswordController,
-                obscureText: _obscureConfirmPassword,
-                maxLength: 20,
-                focusNode: _confirmPasswordFocusNode,
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: const OutlineInputBorder(),
-                  counterText: "",
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureConfirmPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+              SizedBox(
+                height: height * 80 / 932,
+                child: TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: _obscureConfirmPassword,
+                  maxLength: 20,
+                  focusNode: _confirmPasswordFocusNode,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: const OutlineInputBorder(),
+                    counterText: "",
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureConfirmPassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureConfirmPassword = !_obscureConfirmPassword;
-                      });
-                    },
+                    errorText: _confirmPasswordError,
+                    errorStyle: TextStyle(height: height * 1 / 932),
                   ),
-                  errorText: _confirmPasswordError,
-                  errorStyle: TextStyle(height: height * 0.1 / 932),
-                ),
-                onChanged: _validateConfirmPassword,
-              ),
-            ),
-            SizedBox(height: height * 40 / 932),
-            Center(
-              child: GestureDetector(
-                onTap: _submitForm,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: width * 200 / 430,
-                  height: height * 55 / 932,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7),
-                    color: Colors.blue,
-                  ),
-                  child: Text(
-                    "회원가입",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: width * 17 / 430),
-                  ),
+                  onChanged: _validateConfirmPassword,
                 ),
               ),
-            ),
-            SizedBox(height: height * 60 / 932),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "혹시 이미 계정이 있으신가요?",
-                  style: TextStyle(fontSize: width * 16 / 430),
-                ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+              SizedBox(height: height * 40 / 932),
+              Center(
+                child: GestureDetector(
+                  onTap: _submitForm,
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: width * 200 / 430,
+                    height: height * 55 / 932,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7),
+                      color: Colors.blue,
+                    ),
                     child: Text(
-                      "Log in",
-                      style: TextStyle(fontSize: width * 16 / 430),
-                    ))
-              ],
-            )
-          ],
+                      "회원가입",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: width * 17 / 430),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: height * 60 / 932),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "혹시 이미 계정이 있으신가요?",
+                    style: TextStyle(fontSize: width * 16 / 430),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Log in",
+                        style: TextStyle(fontSize: width * 16 / 430),
+                      ))
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

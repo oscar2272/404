@@ -40,27 +40,22 @@ class _ChatInterviewScreenState extends State<ChatInterviewScreen> {
   @override
   initState() {
     super.initState();
-    messages = [
-      BubbleNormalWidget(
-        text: widget.questionTitle,
-        isSender: false,
-        color: const Color(0xFFE8E8EE),
-        tail: true,
-        textColor: Colors.black,
-      ),
-      //   const BubbleNormalWidget(
-      //   text: "사용자의 답변..",
-      //   isSender: true,
-      //   color: Color(0xFF1B97F3),
-      //   tail: true,
-      //   textColor: Colors.white,
-      // ),
-    ];
-    messages = messages.reversed.toList(); // 초기화 단계에서 리스트를 역순으로 변환
-    isBookmarked = (widget.bookmarkId != null);
+    messages = [];
     if (widget.exerciseAnswerId != null) {
       _initializeData();
+    } else {
+      messages = [
+        BubbleNormalWidget(
+          text: widget.questionTitle,
+          isSender: false,
+          color: const Color(0xFFE8E8EE),
+          tail: true,
+          textColor: Colors.black,
+        ),
+      ];
     }
+    messages = messages.reversed.toList(); // 초기화 단계에서 리스트를 역순으로 변환
+    isBookmarked = (widget.bookmarkId != null);
   }
 
   Future<void> _initializeData() async {
@@ -69,26 +64,33 @@ class _ChatInterviewScreenState extends State<ChatInterviewScreen> {
         widget.exerciseAnswerId, widget.questionId);
 
     // 불러온 데이터에 따라 메시지 추가
-    if (widget.exerciseAnswerId != null) {
-      addMessage(
-        BubbleNormalWidget(
-          text: answer.answer,
-          isSender: true,
-          color: const Color(0xFF1B97F3),
-          textColor: Colors.white,
-          tail: true,
-        ),
-      );
-      addMessage(
-        BubbleNormalWidget(
-          text: answer.feedback,
-          isSender: false,
-          color: const Color(0xFFE8E8EE),
-          tail: true,
-          textColor: Colors.black,
-        ),
-      );
-    }
+    addMessage(
+      BubbleNormalWidget(
+        text: widget.questionTitle,
+        isSender: false,
+        color: const Color(0xFFE8E8EE),
+        tail: true,
+        textColor: Colors.black,
+      ),
+    );
+    addMessage(
+      BubbleNormalWidget(
+        text: answer.answer,
+        isSender: true,
+        color: const Color(0xFF1B97F3),
+        textColor: Colors.white,
+        tail: true,
+      ),
+    );
+    addMessage(
+      BubbleNormalWidget(
+        text: answer.feedback,
+        isSender: false,
+        color: const Color(0xFFE8E8EE),
+        tail: true,
+        textColor: Colors.black,
+      ),
+    );
 
     // UI 업데이트
     updateUI();
@@ -141,6 +143,7 @@ class _ChatInterviewScreenState extends State<ChatInterviewScreen> {
   }
 
   Future<void> sendMessage(String message) async {
+    FocusScope.of(context).unfocus();
     addMessage(
       BubbleNormalWidget(
         text: message,
@@ -263,7 +266,7 @@ class _ChatInterviewScreenState extends State<ChatInterviewScreen> {
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 243, 244, 248),
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: true, // 키보드가 화면을 가릴 때 자동으로 위로 올리기
       appBar: AppBar(
         toolbarHeight: height * 70 / 932,
         leadingWidth: width * 35 / 430,

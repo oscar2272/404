@@ -259,57 +259,65 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
           SizedBox(
             height: height * 60 / 932,
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: upperCategoryToLowerCategories.values
-                      .toList()[selectedUpperCategoryIndex]
-                      .isEmpty
-                  ? [Container(height: height * 40 / 932)]
-                  : List.generate(
-                      upperCategoryToLowerCategories.values
-                          .toList()[selectedUpperCategoryIndex]
-                          .length,
-                      (index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: width * 8.0 / 430),
-                          child: ChoiceChip(
-                            side: BorderSide.none,
-                            shape: RoundedRectangleBorder(
+          SizedBox(
+            height: height * 48 / 932,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: upperCategoryToLowerCategories.values
+                        .toList()[selectedUpperCategoryIndex]
+                        .isEmpty
+                    ? [
+                        SizedBox(
+                          height: height * 48 / 932,
+                        ),
+                      ]
+                    : List.generate(
+                        upperCategoryToLowerCategories.values
+                            .toList()[selectedUpperCategoryIndex]
+                            .length,
+                        (index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: width * 8.0 / 430),
+                            child: ChoiceChip(
                               side: BorderSide.none,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            showCheckmark: false,
-                            label: Text(
-                              upperCategoryToLowerCategories.values
-                                  .toList()[selectedUpperCategoryIndex][index],
-                              style: TextStyle(
-                                color: _selections[index]
-                                    ? const Color.fromARGB(255, 255, 255, 255)
-                                    : const Color.fromARGB(255, 35, 33, 33),
-                                fontWeight: _selections[index]
-                                    ? FontWeight.w600
-                                    : FontWeight.w500,
-                                fontSize: width * 15 / 430,
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide.none,
+                                borderRadius: BorderRadius.circular(10),
                               ),
+                              showCheckmark: false,
+                              label: Text(
+                                upperCategoryToLowerCategories.values
+                                        .toList()[selectedUpperCategoryIndex]
+                                    [index],
+                                style: TextStyle(
+                                  color: _selections[index]
+                                      ? const Color.fromARGB(255, 255, 255, 255)
+                                      : const Color.fromARGB(255, 35, 33, 33),
+                                  fontWeight: _selections[index]
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
+                                  fontSize: width * 15 / 430,
+                                ),
+                              ),
+                              selected: _selections[index],
+                              selectedColor:
+                                  const Color.fromARGB(255, 122, 158, 209)
+                                      .withOpacity(0.9),
+                              onSelected: (bool selected) {
+                                setState(() {
+                                  _selections[index] = selected;
+                                  fetchOptions();
+                                });
+                              },
+                              backgroundColor: const Color(0xFFE6EDF7),
+                              visualDensity: VisualDensity.compact,
                             ),
-                            selected: _selections[index],
-                            selectedColor:
-                                const Color.fromARGB(255, 122, 158, 209)
-                                    .withOpacity(0.9),
-                            onSelected: (bool selected) {
-                              setState(() {
-                                _selections[index] = selected;
-                                fetchOptions();
-                              });
-                            },
-                            backgroundColor: const Color(0xFFE6EDF7),
-                            visualDensity: VisualDensity.compact,
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
+              ),
             ),
           ),
           Container(
@@ -341,6 +349,7 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                   onChanged: (String? value) {
                     setState(() {
                       _selectLabel = value;
+                      fetchOptions();
                     });
                   },
                   label: solved,
@@ -357,7 +366,7 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
                   ),
                 ),
                 SizedBox(
-                  width: width * 85 / 430,
+                  width: width * 80 / 430,
                 ),
                 CustomDropDown(
                   labelItems: bookmarkItems,

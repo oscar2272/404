@@ -13,6 +13,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  //static const baseUrl = "http://10.0.2.2:8000";
   static const baseUrl = "http://127.0.0.1:8000";
   XFile? image;
   String? imageUrl;
@@ -32,30 +33,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> pickImage() async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.location,
-      Permission.storage,
-    ].request();
+    var status = await Permission.camera.status;
+    await Permission.camera.request();
 
+    // print(status.isPermanentlyDenied); ios
+    // print(status.isDenied); android
+    // print(status.isPermanentlyDenied && status.isDenied);
+    if (status.isPermanentlyDenied && status.isDenied) {
+      _showPermissionDeniedDialog();
+      return;
+    }
     try {
+      // 권한이 허용된 경우에만 이미지 선택기 열기
       final XFile? pickedFile =
           await picker.pickImage(source: ImageSource.gallery);
-      if (statuses[Permission.storage].toString() !=
-          'PermissionStatus.granted') {
-        // 권한 요청이 거부된 경우
-        _showPermissionDeniedDialog();
-        return;
-      }
       if (pickedFile != null) {
         setState(() {
           image = pickedFile;
         });
       }
     } catch (e) {
+      // 이미지 선택 실패 시 예외 처리
       //print("Image picking failed: $e");
     } finally {
       setState(() {
-        isPickingImage = false; // 이미지 피커가 닫힌 상태로 변경
+        isPickingImage = false;
       });
     }
   }
@@ -65,8 +67,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('권한 필요'),
-          content: const Text('이 기능을 사용하려면 설정에서 권한을 허용해주세요.'),
+          title: const Center(child: Text('권한 필요')),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('이 기능을 사용하려면 설정에서 권한을 허용해주세요.'),
+            ],
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -98,18 +106,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         const SnackBar(content: Text('성공적으로 프로필을 업데이트했습니다.')),
       );
       Navigator.pop(context, true); // 이전 화면으로 돌아감
-    } else if (message == "중복") {
-      // 업데이트 실패한 경우 (메시지에 따라 처리 가능)
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("중복된 닉네임입니다."),
-        ),
-      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("프로필 업데이트에 실패했습니다."),
-        ),
+        SnackBar(content: Text(message)),
       );
     }
   }
@@ -117,6 +116,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _resetProfile() async {
     await Provider.of<UserProvider>(context, listen: false).resetImage(
         Provider.of<UserProvider>(context, listen: false).user!.userId);
+    image = null;
     // ignore: use_build_context_synchronously
     await Provider.of<UserProvider>(context, listen: false).fetchUserData();
   }

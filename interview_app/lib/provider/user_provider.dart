@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interview_app/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider with ChangeNotifier {
   User? _user;
   User? get user => _user;
-
+  //static const String baseUrl = 'http://10.0.2.2:8000';
   static const String baseUrl = "http://127.0.0.1:8000";
-  Future<bool> signUp(String email, String nickname, String password) async {
+  Future<String> signUp(String email, String nickname, String password) async {
     final url = Uri.parse('$baseUrl/user/signup/'); // API URL 수정 필요
     // CSRF 토큰 가져오기
     final csrfToken = await _fetchCSRFTokenFromServer();
@@ -30,28 +30,30 @@ class UserProvider with ChangeNotifier {
         'password': password,
       }),
     );
+    final responseBody = jsonDecode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 201) {
-      final responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-
       // 세션 ID를 서버 응답에서 가져오기 (예시로 'session_id'라는 키 사용)
       String? sessionId = responseBody['session_id'];
 
       notifyListeners();
       if (sessionId != null) {
         // 세션 ID를 SharedPreferences에 저장
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('session_id', sessionId);
-
+        const prefs = FlutterSecureStorage();
+        await prefs.write(key: 'session_id', value: sessionId);
+        await prefs.write(key: 'auto_login', value: sessionId);
         await fetchUserData();
+        final String message = responseBody['message'];
 
-        return true;
+        return message;
       } else {
-        return false; // 세션 ID가 없으면 실패 처리
+        final String error = responseBody['error'];
+        return error; // 세션 ID가 없으면 실패 처리
       }
     } else {
       // 서버 응답이 200이 아닌 경우 실패 처리
-      return false;
+      final String error = responseBody['error'];
+      return error;
     }
   }
 
@@ -76,20 +78,21 @@ class UserProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      String? newSessionId = responseBody['session_id'];
+      String? newSessionId =
+          responseBody['session_id']; //로그인시 생성된 백엔드 session_id
 
-      // 현재 저장된 세션 ID를 가져옵니다.
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? existingSessionId = prefs.getString('session_id');
+      const prefs = FlutterSecureStorage();
+      String? existingSessionId =
+          await prefs.read(key: 'session_id'); //기존 로컬에 저장되어있는 session_id
 
-      // 세션 ID가 다를 경우 기존 세션 ID를 제거합니다.
-      if (existingSessionId != null && existingSessionId != newSessionId) {
-        await prefs.remove('session_id');
+      if (existingSessionId != newSessionId) {
+        // 로그아웃후 다시로그인했거나 , 다른아이디로 로그인했을시
+        await prefs.delete(key: 'session_id');
       }
 
       // 새로운 세션 ID를 저장합니다.
       if (newSessionId != null) {
-        await prefs.setString('session_id', newSessionId);
+        await prefs.write(key: 'session_id', value: newSessionId);
         await fetchUserData(); // 사용자 데이터 갱신
         notifyListeners();
         return true;
@@ -101,13 +104,38 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> logInWithSession(String sessionId) async {
+    final url = Uri.parse('$baseUrl/user/login_session/'); // API URL 수정 필요
+    final csrfToken = await _fetchCSRFTokenFromServer();
+
+    var headers = {
+      HttpHeaders.refererHeader: "http://127.0.0.1:8000",
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.cookieHeader: "csrftoken=$csrfToken",
+      'X-CSRFToken': csrfToken,
+      'Authorization': 'Session $sessionId',
+    };
+    final response = await http.post(
+      url,
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      await fetchUserData();
+      notifyListeners();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> logout() async {
     final url = Uri.parse('$baseUrl/user/logout');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.remove('session_id');
+      const prefs = FlutterSecureStorage();
+      await prefs.delete(key: 'session_id');
+      await prefs.delete(key: 'auto_login');
       return true;
     } else {
       return false;
@@ -117,8 +145,8 @@ class UserProvider with ChangeNotifier {
   Future<void> fetchUserData() async {
     try {
       final url = Uri.parse('$baseUrl/user/data');
-      SharedPreferences? prefs = await SharedPreferences.getInstance();
-      String? sessionId = prefs.getString('session_id');
+      const prefs = FlutterSecureStorage();
+      String? sessionId = await prefs.read(key: 'session_id');
       final response = await http.get(
         url,
         headers: {'Authorization': 'Session $sessionId'},
@@ -153,22 +181,24 @@ class UserProvider with ChangeNotifier {
     }
 
     final response = await request.send();
+    final responseData = await response.stream.bytesToString();
+    final jsonResponse = jsonDecode(responseData);
     if (response.statusCode == 200) {
       await fetchUserData();
       notifyListeners();
       return "성공";
     } else if (response.statusCode == 400) {
-      return "중복";
+      return jsonResponse['error'];
     } else {
-      return "실패";
+      return "알 수 없는 이유로 실패했습니다.";
     }
   }
 
   Future<void> settingQuota(int quota) async {
     final url = Uri.parse('$baseUrl/user/quota/'); // URL 수정
     final csrfToken = await _fetchCSRFTokenFromServer();
-    SharedPreferences? prefs = await SharedPreferences.getInstance();
-    String? sessionId = prefs.getString('session_id');
+    const prefs = FlutterSecureStorage();
+    String? sessionId = await prefs.read(key: 'session_id');
     var headers = {
       HttpHeaders.refererHeader: "http://127.0.0.1:8000",
       HttpHeaders.contentTypeHeader: "application/json",
@@ -216,7 +246,7 @@ class UserProvider with ChangeNotifier {
 
   Future<String> _fetchCSRFTokenFromServer() async {
     // 서버에서 CSRF 토큰 가져오기
-    final response = await http.get(Uri.parse('$baseUrl/get_csrf_token'));
+    final response = await http.get(Uri.parse('$baseUrl/get_csrf_token/'));
 
     // 응답 확인 및 CSRF 토큰 추출
     if (response.statusCode == 200) {
@@ -229,8 +259,9 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<String?> getSessionId() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? sessionId = prefs.getString('session_id');
+    const storage = FlutterSecureStorage();
+    String? sessionId = await storage.read(key: 'session_id');
+
     return sessionId;
   }
 }

@@ -14,20 +14,21 @@ from django.contrib.auth import authenticate, login, logout, get_user
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sessions.models import Session
 from django.core.files.storage import default_storage
+import os
+from django.conf import settings
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import User
 
 
 @api_view(['GET'])
 def get_user_data(request):
     session_id = request.headers.get('Authorization').split(' ')[1]
-    print('session_id:',session_id)
     if session_id:
         # 세션에 연결된 사용자 ID 가져오기
         session = Session.objects.get(session_key=session_id)
-        #print('session:',session)
         user_id = session.get_decoded().get('_auth_user_id')
-        #print('user_id:', user_id)
         user = User.objects.get(pk=user_id)
-
 
         # 사용자 데이터 반환
         serializer = UserSerializer(user)
@@ -61,14 +62,12 @@ def signup(request):
     # 세션 처리
     try:
         login(request, user)
-        print(f"User logged in: {user.email}")
     except Exception as e:
         print(f"Login error: {e}")
         return Response({"error": "로그인 중 오류 발생"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     request.session.save() # 세션 키 생성
     session_id = request.session.session_key # 세션 키꺼내기
-    print("회원가입후 session_id:",session_id) #세션 키 출력
 
     serializer = UserSerializer(user)
     return Response({"message": "회원가입 성공", "user": serializer.data,"session_id": session_id}, status=status.HTTP_201_CREATED)
@@ -78,16 +77,27 @@ def signup(request):
 def login_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
-    print(f"Received data: email={email}, password={password}")
     # 사용자 인증
     user = authenticate(request, email=email, password=password)
+    if(user is None):
+        return Response({"message": "로그인 실패"}, status=status.HTTP_400_BAD_REQUEST)
     if user is not None:
         login(request, user)  # 세션 생성
         request.session.save() # 세션 키 생성
         session_id = request.session.session_key # 세션 키꺼내기
-
         serializer = UserSerializer(user)
         return Response({"message": "로그인 성공", "user": serializer.data,"session_id": session_id}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def login_with_session(request):
+    session_id = request.headers.get('Authorization').split(' ')[1]
+    session = Session.objects.get(session_key=session_id)
+    user_id = session.get_decoded().get('_auth_user_id')
+    user = User.objects.get(pk=user_id)
+    serializer = UserSerializer(user)
+
+    return Response({"message": "로그인 성공", "user": serializer.data}, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 def find_email(request):
@@ -99,44 +109,46 @@ def find_email(request):
 
 @api_view(['POST'])
 def reset_password(request):
+    session_id = request.headers.get('Authorization').split(' ')[1]
+    session = Session.objects.get(session_key=session_id)
+    user_id = session.get_decoded().get('_auth_user_id')
+    user = User.objects.get(pk=user_id)
     password = request.data.get('password')
     newPassword = request.data.get('new_password')
-    user = get_user(request)
-    user.set_password(newPassword)
-    user.save()
-    return Response({"message": "비밀번호 변경 성공"}, status=status.HTTP_200_OK)
+    if(user.check_password(password)):
+        user.set_password(newPassword)
+        user.save()
+        return Response({"message": "비밀번호 변경 성공"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"message": "비밀번호 변경 실패"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(['POST'])
 def request_reset_password(request):
     email = request.data.get('email')
-    print(f"Received data: email={email}")
 
     try:
         user = User.objects.get(email=email)
     except User.DoesNotExist:
         return Response({"message": "해당 이메일을 가진 사용자가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
     token = default_token_generator.make_token(user)
-    reset_url = request.build_absolute_uri(reverse('reset_password', args=[user.pk, token]))
+    reset_url = request.build_absolute_uri(reverse('reset_password'))
 
     send_mail(
         '비밀번호 재설정',
-        f'아래 링크를 클릭하여 비밀번호를 재설정하세요: {reset_url}',
+        f'모바일에서 링크를 클릭하여 비밀번호를 재설정하세요: {reset_url}',
         settings.DEFAULT_FROM_EMAIL,
         [email],
     )
 
     return Response({"message": "비밀번호 재설정 이메일이 발송되었습니다."}, status=status.HTTP_200_OK)
 
-import os
-from django.conf import settings
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from .models import User
+
 
 def reset_image(request, user_id):
     if request.method == 'PUT':
         user = get_object_or_404(User, pk=user_id)
-        print(user.image.url)
         # 기존 이미지 경로
         if user.image and user.image.url != '/media/images/profile.png':  # 기본 이미지는 삭제하지 않음
             old_image_path = os.path.join(settings.MEDIA_ROOT, user.image.path)
@@ -205,10 +217,8 @@ def setting_quota(request):
 class UpdateProfileView(View):
     def post(self, request, *args, **kwargs):
         user_id = kwargs.get('user_id')
-        print('user_id:',user_id)
         user = User.objects.get(pk=user_id)
         nickname = request.POST.get('nickname')
-        print('nickname:',nickname)
         if nickname:
             # 1. 기존 User.nickname이 그대로 올 경우
             if nickname == user.nickname:

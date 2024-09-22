@@ -65,4 +65,7 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+  ext.kotlin_version = "1.8.0"
+
+}

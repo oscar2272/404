@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:interview_app/provider/user_provider.dart';
 import 'package:interview_app/screens/system/find_id_screen.dart';
 import 'package:interview_app/screens/system/find_password_screen.dart';
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailFocusNode = FocusNode();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   bool isAutoLogin = false;
   bool _obscurePassword = true;
@@ -29,6 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     userState = Provider.of<UserProvider>(context, listen: false);
+
+    _checkAutoLogin();
   }
 
   void onChanged(bool? newValue) {
@@ -48,8 +52,16 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = _passwordController.text.trim();
 
     bool success = await userState.logIn(email, password);
+    const prefs = FlutterSecureStorage();
+    String? sessionId = await prefs.read(key: 'session_id');
     if (!mounted) return;
     if (success) {
+      if (isAutoLogin) {
+        //자동로그인 체크후 로그인시
+        await _storage.write(key: 'auto_login', value: sessionId);
+      }
+      if (!mounted) return;
+
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -59,8 +71,26 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('로그인 실패')),
+        const SnackBar(content: Text('이메일 또는 비밀번호가 일치하지 않습니다.')),
       );
+    }
+  }
+
+  Future<void> _checkAutoLogin() async {
+    String? autologin = await _storage.read(key: 'auto_login');
+    if (autologin != null) {
+      userState.fetchUserData();
+      bool success = await userState.logInWithSession(autologin);
+
+      if (success && mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PopupScreen(),
+          ),
+          (route) => false,
+        );
+      }
     }
   }
 

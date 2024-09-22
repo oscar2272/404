@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interview_app/screens/main/root_screen.dart';
-import 'package:interview_app/screens/system/aaaa_password_screen.dart';
+import 'package:interview_app/screens/system/change_password_screen.dart';
 import 'package:interview_app/widgets/setting_tile_widget.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -41,27 +41,47 @@ class SettingScreen extends StatelessWidget {
               children: [
                 SettingTile(
                   title: "디스플레이",
-                  route: MaterialPageRoute(
-                    builder: (context) => const RootScreen(),
-                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RootScreen(),
+                      ),
+                    );
+                  },
                 ),
                 SettingTile(
                   title: "알림 설정",
-                  route: MaterialPageRoute(
-                    builder: (context) => const RootScreen(),
-                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RootScreen(),
+                      ),
+                    );
+                  },
                 ),
                 SettingTile(
                   title: "비밀번호 변경",
-                  route: MaterialPageRoute(
-                    builder: (context) => const ChangePasswordScreen(),
-                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChangePasswordScreen(),
+                      ),
+                    );
+                  },
                 ),
                 SettingTile(
                   title: "회원 탈퇴",
-                  route: MaterialPageRoute(
-                    builder: (context) => const RootScreen(),
-                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RootScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

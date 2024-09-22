@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 class QuestionService {
+  //static const String baseUrl = 'http://10.0.2.2:8000';
+
   static const String baseUrl = 'http://127.0.0.1:8000';
   static const String question = "questions";
 
@@ -48,17 +50,4 @@ class QuestionService {
       // 예외 발생 시 스트림에 에러를 추가합니다.
     }
   }
-
-  // static Future<Question> getQuestion(int questionId) async {
-  //   SharedPreferences? prefs = await SharedPreferences.getInstance();
-  //   String? sessionId = prefs.getString('session_id');
-  //   final url = Uri.parse('$baseUrl/questions/$questionId/');
-
-  //   final response = await http.get(url, headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Session $sessionId',
-  //   });
-  //   final question = jsonDecode(utf8.decode(response.bodyBytes));
-  //   return Question.fromJson(question);
-  // }
 }

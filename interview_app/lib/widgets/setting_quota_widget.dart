@@ -58,10 +58,7 @@ class _SettingQuotaState extends State<SettingQuota> {
             min: 0,
             max: 50,
             divisions: 10,
-            label: Provider.of<UserProvider>(context, listen: false)
-                .user!
-                .quota
-                .toString(), //user.quota
+            label: widget.goalValue.toInt().toString(), //user.quota
             onChanged: widget.onChanged,
           ),
           Row(

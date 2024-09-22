@@ -12,8 +12,9 @@ urlpatterns = [
   path('data/', views.get_user_data, name='data'),
   path('signup/', views.signup, name='signup'),
   path('login/',views.login_view, name='login'),
+  path('login_session/',views.login_with_session, name='login_with_session'),
   path('logout/',views.LogoutView.as_view(), name='logout'),
   path('find_email/',views.find_email, name='find_email'),
-  path('reset_password/<int:user_id>/<str:token>/',views.reset_password, name='reset_password'),
+  path('reset_password/',views.reset_password, name='reset_password'),
   path('request_reset_password/',views.request_reset_password, name='request_reset_password'),
 ]

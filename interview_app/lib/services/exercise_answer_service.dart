@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:interview_app/models/exercise_answer_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ExerciseAnswerService {
-  static const baseUrl = "http://127.0.0.1:8000";
+  //static const String baseUrl = 'http://10.0.2.2:8000';
+
+  static const String baseUrl = 'http://127.0.0.1:8000';
   static const exercise = "exerciseAnswer";
   static const question = 'questions';
 
@@ -15,8 +17,8 @@ class ExerciseAnswerService {
     int questionId,
   ) async {
     final csrfToken = await _fetchCSRFTokenFromServer();
-    SharedPreferences? prefs = await SharedPreferences.getInstance();
-    String? sessionId = prefs.getString('session_id');
+    const prefs = FlutterSecureStorage();
+    String? sessionId = await prefs.read(key: 'session_id');
     final url = Uri.parse('$baseUrl/$exercise/');
 
     final response = await http.post(
@@ -37,8 +39,8 @@ class ExerciseAnswerService {
 
   static Future<ExerciseAnswer> getAnswer(
       int? exerciseAnswerId, int questionId) async {
-    SharedPreferences? prefs = await SharedPreferences.getInstance();
-    String? sessionId = prefs.getString('session_id');
+    const prefs = FlutterSecureStorage();
+    String? sessionId = await prefs.read(key: 'session_id');
     final url = Uri.parse('$baseUrl/$exercise/$exerciseAnswerId/');
 
     final response = await http.get(
@@ -80,8 +82,8 @@ class ExerciseAnswerService {
   }
 
   static Future<int> answeredCount() async {
-    SharedPreferences? prefs = await SharedPreferences.getInstance();
-    String? sessionId = prefs.getString('session_id');
+    const prefs = FlutterSecureStorage();
+    String? sessionId = await prefs.read(key: 'session_id');
     final uri = Uri.parse('$baseUrl/$exercise/count/');
     final response = await http.get(
       uri,
@@ -99,8 +101,8 @@ class ExerciseAnswerService {
   }
 
   static Future<int> todayAnsweredCount() async {
-    SharedPreferences? prefs = await SharedPreferences.getInstance();
-    String? sessionId = prefs.getString('session_id');
+    const prefs = FlutterSecureStorage();
+    String? sessionId = await prefs.read(key: 'session_id');
     final uri = Uri.parse('$baseUrl/$exercise/todayCount/');
     final response = await http.get(
       uri,
@@ -118,8 +120,8 @@ class ExerciseAnswerService {
   }
 
   static Future<String> mostAnsweredCategory() async {
-    SharedPreferences? prefs = await SharedPreferences.getInstance();
-    String? sessionId = prefs.getString('session_id');
+    const prefs = FlutterSecureStorage();
+    String? sessionId = await prefs.read(key: 'session_id');
     final uri = Uri.parse('$baseUrl/$exercise/category/');
     final response = await http.get(
       uri,
@@ -138,7 +140,7 @@ class ExerciseAnswerService {
 
   static Future<String> _fetchCSRFTokenFromServer() async {
     // 서버에서 CSRF 토큰 가져오기
-    final response = await http.get(Uri.parse('$baseUrl/get_csrf_token'));
+    final response = await http.get(Uri.parse('$baseUrl/get_csrf_token/'));
 
     // 응답 확인 및 CSRF 토큰 추출
     if (response.statusCode == 200) {

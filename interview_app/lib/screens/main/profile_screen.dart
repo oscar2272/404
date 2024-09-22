@@ -24,6 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool result = false;
   late String mostCategory = '';
   double _goalValue = 50.0;
+  //static const baseUrl = "http://10.0.2.2:8000";
   static const baseUrl = "http://127.0.0.1:8000";
 
   final colorList = <Color>[
@@ -254,7 +255,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     SizedBox(
                                       width: width * 57 / 430,
                                       child: Text(
-                                        todayCount.toString(),
+                                        "${todayCount.toString()}문제",
                                         textAlign: TextAlign.end,
                                       ),
                                     )

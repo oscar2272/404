@@ -26,7 +26,6 @@ urlpatterns = [
     path("questions/", include("question.urls")),
     path("user/", include("user.urls")),
     path("exerciseAnswer/", include("exercise_answer.urls")),
-    path("mockInterviewAnswer/", include("mock_interview_answer.urls")),
     path("logMockInterview/", include("log_mock_interview.urls")),
 
     path('get_csrf_token/',GetCSRFTokenView.as_view()),

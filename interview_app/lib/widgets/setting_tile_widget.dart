@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SettingTile extends StatelessWidget {
-  final Route<Object?> route;
   final String title;
-  const SettingTile({super.key, required this.title, required this.route});
+  final VoidCallback onTap; // onTap 콜백 추가
+
+  const SettingTile({
+    super.key,
+    required this.title,
+    required this.onTap, // onTap 콜백을 필수 인자로 받음
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +37,7 @@ class SettingTile extends StatelessWidget {
               style: const TextStyle(
                   color: Color(0xFF101840), fontWeight: FontWeight.w600),
             ),
-            onTap: () {
-              Navigator.push(
-                context,
-                route,
-              );
-            },
+            onTap: onTap, // 콜백을 사용하여 네비게이션 처리
           ),
         ),
       ],

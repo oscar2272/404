@@ -45,6 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+  		<dict>
+    		<key>CFBundleURLSchemes</key>
+    		<array>
+      			<string>myapp</string>
+    		</array>
+  		</dict>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to the camera to upload images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

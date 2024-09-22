@@ -1,6 +1,8 @@
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+import re
 from exercise_answer.models import ExerciseAnswer
 from question.models import Question
 from user.models import Bookmark, User
@@ -86,4 +88,49 @@ class QuestionDetailView(APIView):
         }
 
         return Response(response_data)
+
+def extract_number(file_name):
+    # 파일 이름 끝에 있는 숫자를 추출
+    match = re.search(r'_([0-9]+)\.json$', file_name)
+
+    return int(match.group(1)) if match else 0
+
+
+def view_uploaded_questions(request):
+    print("test")
+    questions = Question.objects.all()
+    # file_name의 숫자 부분을 기준으로 정렬
+    sorted_questions = sorted(questions, key=lambda q: extract_number(q.file_name))
+
+    print("Sorted file names:")
+    for question in sorted_questions:
+        print(question.file_name)
+    question_count = questions.count()  # 전체 질문 수 계산
+
+    context = {
+        'questions': sorted_questions,  # 여기를 sorted_questions로 변경
+        'question_count': question_count
+    }
+
+    return render(request, 'questions.html', context)
+
+def delete_all_questions(request):
+    if request.method == 'POST':
+        Question.objects.all().delete()
+        return redirect('questions:view_uploaded_questions')  # 수정된 부분
+    return redirect('questions:view_uploaded_questions')  # 수정된 부분
+
+def fill_empty_fields_with_other(request):
+    if request.method == "POST":
+        # 모든 Question 객체를 가져와서 빈 값을 'Other'로 업데이트
+        questions = Question.objects.all()
+        for question in questions:
+            if not question.category:
+                question.category = 'other'
+            if not question.sub_category:
+                question.sub_category = 'other'
+            question.save()
+        return redirect('questions:view_uploaded_questions')
+    else:
+        return HttpResponse(status=405)  # Method Not Allowed
 

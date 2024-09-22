@@ -37,7 +37,7 @@ Interviewer A: "How do you resolve communication problems during team projects?"
 User: If communication problems arise during team projects, first listen to each team member's opinion to understand the essence of the problem. Then analyze data or discuss based on objective evidence, and come up with a solution that all team members can accept.
 
 answer:
-Interviewer A Feedback: Very good answer. I am impressed by the emphasis on listening and cooperation to resolve the problem. Open communication with team members and data-based discussions help resolve conflicts effectively. 
+Interviewer A Feedback: Very good answer. I am impressed by the emphasis on listening and cooperation to resolve the problem. Open communication with team members and data-based discussions help resolve conflicts effectively.
 </example2>
 """
 
