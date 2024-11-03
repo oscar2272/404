@@ -164,19 +164,12 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                   ),
                   TextButton(
                     child: const Text('진행'),
-                    onPressed: () async {
-                      final isChanged = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TestInterviewScreen(
-                              logMockInterviewId: (choiceIndex == -1)
-                                  ? logmock[0].logMockInterviewId
-                                  : logmock[choiceIndex].logMockInterviewId,
-                              round: (choiceIndex == -1)
-                                  ? logmock[0].round
-                                  : logmock[choiceIndex].round),
-                        ),
-                      );
+                    onPressed: () {
+                      Navigator.of(context).pop();
+
+                      dynamic isChanged =
+                          continueInterview(context, choiceIndex, logmock);
+
                       if (isChanged == true && mounted) {
                         setState(() {
                           logMockInterview =
@@ -197,6 +190,23 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
         });
       },
     );
+  }
+
+  Future<dynamic> continueInterview(BuildContext context, int choiceIndex,
+      List<LogMockModels> logmock) async {
+    final isChanged = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TestInterviewScreen(
+            logMockInterviewId: (choiceIndex == -1)
+                ? logmock[0].logMockInterviewId
+                : logmock[choiceIndex].logMockInterviewId,
+            round: (choiceIndex == -1)
+                ? logmock[0].round
+                : logmock[choiceIndex].round),
+      ),
+    );
+    return isChanged;
   }
 
   Future<void> startNewMockInterview() async {
