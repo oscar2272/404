@@ -152,7 +152,6 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
           ? 'show all'
           : (_selectLabel == "Unsolved" ? 'false' : 'true'),
     );
-    // 이전에 사용한 StreamController를 닫고, 새로운 컨트롤러를 생성합니다.
     _questionsController.close();
     _questionsController = StreamController<List<Question>>();
     _currentQuestions = questions;

@@ -136,6 +136,7 @@ class UserProvider with ChangeNotifier {
       const prefs = FlutterSecureStorage();
       await prefs.delete(key: 'session_id');
       await prefs.delete(key: 'auto_login');
+      await prefs.delete(key: 'isPopup');
       return true;
     } else {
       return false;
@@ -161,7 +162,6 @@ class UserProvider with ChangeNotifier {
         throw Exception('Failed to fetch user data: ${response.statusCode}');
       }
     } catch (e) {
-      //print('Error fetching user data: $e');
       return; // 예외 발생 시 null 반환
     }
   }

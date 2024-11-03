@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:interview_app/provider/user_provider.dart';
+import 'package:interview_app/screens/main/root_screen.dart';
 import 'package:interview_app/screens/system/find_id_screen.dart';
 import 'package:interview_app/screens/system/find_password_screen.dart';
 import 'package:interview_app/screens/system/signup_screen.dart';
@@ -54,21 +55,38 @@ class _LoginScreenState extends State<LoginScreen> {
     bool success = await userState.logIn(email, password);
     const prefs = FlutterSecureStorage();
     String? sessionId = await prefs.read(key: 'session_id');
+    String? storedValue = await _storage.read(key: 'isPopup');
     if (!mounted) return;
     if (success) {
-      if (isAutoLogin) {
-        //자동로그인 체크후 로그인시
-        await _storage.write(key: 'auto_login', value: sessionId);
-      }
-      if (!mounted) return;
+      if (storedValue == "true") {
+        if (isAutoLogin) {
+          //자동로그인 체크후 로그인시
+          await _storage.write(key: 'auto_login', value: sessionId);
+        }
+        if (!mounted) return;
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const PopupScreen(),
-        ),
-        (route) => false,
-      );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const RootScreen(),
+          ),
+          (route) => false,
+        );
+      } else {
+        if (isAutoLogin) {
+          //자동로그인 체크후 로그인시
+          await _storage.write(key: 'auto_login', value: sessionId);
+        }
+        if (!mounted) return;
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PopupScreen(),
+          ),
+          (route) => false,
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('이메일 또는 비밀번호가 일치하지 않습니다.')),
@@ -78,18 +96,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _checkAutoLogin() async {
     String? autologin = await _storage.read(key: 'auto_login');
+    String? storedValue = await _storage.read(key: 'isPopup');
     if (autologin != null) {
-      userState.fetchUserData();
-      bool success = await userState.logInWithSession(autologin);
+      if (storedValue == "true") {
+        userState.fetchUserData();
+        bool success = await userState.logInWithSession(autologin);
 
-      if (success && mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const PopupScreen(),
-          ),
-          (route) => false,
-        );
+        if (success && mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RootScreen(),
+            ),
+            (route) => false,
+          );
+        }
+      } else {
+        userState.fetchUserData();
+        bool success = await userState.logInWithSession(autologin);
+
+        if (success && mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PopupScreen(),
+            ),
+            (route) => false,
+          );
+        }
       }
     }
   }

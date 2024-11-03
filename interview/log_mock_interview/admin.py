@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from log_mock_interview.models import LogMockInterview, MockInterviewAnswer
+
+admin.site.register(LogMockInterview)
+admin.site.register(MockInterviewAnswer)
