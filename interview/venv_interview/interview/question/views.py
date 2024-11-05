@@ -18,7 +18,7 @@ class QuestionListView(APIView):
         category = request.query_params.get('category', None)
         sub_category = request.query_params.get('subCategory', None)
         bookmark = request.query_params.get('bookmark', None)
-        answer = request.query_params.get('answer', None)  # 답변 여부 필터링 추가
+        answer = request.query_params.get('answer', None)
 
         session_id = request.headers.get('Authorization').split(' ')[1]
         session = Session.objects.get(session_key=session_id)
@@ -27,6 +27,7 @@ class QuestionListView(APIView):
 
         queryset = Question.objects.all()
 
+        # 필터링
         if category:
             queryset = queryset.filter(category=category)
         if sub_category:
@@ -40,7 +41,6 @@ class QuestionListView(APIView):
             elif bookmark == 'false':
                 queryset = queryset.exclude(question_id__in=bookmark_ids)
 
-        # 사용자 답변에 대한 필터링 로직 추가
         if answer:
             answered_question_ids = ExerciseAnswer.objects.filter(user=user).values_list('question_id', flat=True)
             if answer == 'true':
@@ -48,25 +48,22 @@ class QuestionListView(APIView):
             elif answer == 'false':
                 queryset = queryset.exclude(question_id__in=answered_question_ids)
 
-        # 북마크 및 답변 정보를 함께 응답에 포함
-        bookmark_info = Bookmark.objects.filter(user=user).values('question_id', 'bookmark_id')
-        bookmark_info_dict = {info['question_id']: info['bookmark_id'] for info in bookmark_info}
+        # 북마크와 답변 정보를 사전으로 미리 로드
+        bookmark_info = {info['question_id']: info['bookmark_id'] for info in Bookmark.objects.filter(user=user).values('question_id', 'bookmark_id')}
+        exercise_answers = {answer['question_id']: answer['exercise_answer_id'] for answer in ExerciseAnswer.objects.filter(user=user).values('question_id', 'exercise_answer_id')}
 
-        exercise_answers = ExerciseAnswer.objects.filter(user=user).values('question_id', 'exercise_answer_id')
-        exercise_answer_dict = {answer['question_id']: answer['exercise_answer_id'] for answer in exercise_answers}
-
+        # 응답 데이터 생성
         response_data = [
             {
                 "question_id": question.question_id,
                 "category": question.category,
                 "sub_category": question.sub_category,
                 "question_title": question.question_title,
-                "bookmark_id": bookmark_info_dict.get(question.question_id, None),
-                "exercise_answer_id": exercise_answer_dict.get(question.question_id, None)  # 답변 여부를 추가
+                "bookmark_id": bookmark_info.get(question.question_id, None),
+                "exercise_answer_id": exercise_answers.get(question.question_id, None)
             }
             for question in queryset
         ]
-
 
 
         return Response(response_data)
