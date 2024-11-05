@@ -1,7 +1,0 @@
-MODEL = [
-    ft:gpt-3.5-turbo-1106:personal::AAZXGDTc  // 처음 학습시킨 모의면접 gpt
-
-    ft:gpt-3.5-turbo-1106:personal::AAbjz6ui // 모의면접 test gpt2 신경 안써도 됨
-
-    
-] 
