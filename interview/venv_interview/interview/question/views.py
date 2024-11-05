@@ -22,50 +22,43 @@ class QuestionListView(APIView):
         user_id = session.get_decoded().get('_auth_user_id')
         user = User.objects.get(pk=user_id)
 
-        # 캐시 키 생성
-        cache_key = f'questions_{category}_{sub_category}_{bookmark}_{answer}'
-        questions = cache.get(cache_key)
+        # 쿼리셋에 prefetch_related 적용
+        queryset = Question.objects.prefetch_related('bookmark_set', 'exerciseanswer_set').all()
 
-        if questions is None:
-            # 쿼리셋에 prefetch_related 적용
-            queryset = Question.objects.prefetch_related('bookmark_set', 'exerciseanswer_set').all()
+        # 필터링 적용
+        if category:
+            queryset = queryset.filter(category=category)
+        if sub_category:
+            sub_category_list = sub_category.split(',')
+            queryset = queryset.filter(sub_category__in=sub_category_list)
+        if bookmark:
+            bookmark_ids = Bookmark.objects.filter(user=user).values_list('question_id', flat=True)
+            if bookmark == 'true':
+                queryset = queryset.filter(question_id__in=bookmark_ids)
+            elif bookmark == 'false':
+                queryset = queryset.exclude(question_id__in=bookmark_ids)
+        if answer:
+            answered_question_ids = ExerciseAnswer.objects.filter(user=user).values_list('question_id', flat=True)
+            if answer == 'true':
+                queryset = queryset.filter(question_id__in=answered_question_ids)
+            elif answer == 'false':
+                queryset = queryset.exclude(question_id__in=answered_question_ids)
 
-            # 필터링 적용
-            if category:
-                queryset = queryset.filter(category=category)
-            if sub_category:
-                sub_category_list = sub_category.split(',')
-                queryset = queryset.filter(sub_category__in=sub_category_list)
-            if bookmark:
-                bookmark_ids = Bookmark.objects.filter(user=user).values_list('question_id', flat=True)
-                if bookmark == 'true':
-                    queryset = queryset.filter(question_id__in=bookmark_ids)
-                elif bookmark == 'false':
-                    queryset = queryset.exclude(question_id__in=bookmark_ids)
-            if answer:
-                answered_question_ids = ExerciseAnswer.objects.filter(user=user).values_list('question_id', flat=True)
-                if answer == 'true':
-                    queryset = queryset.filter(question_id__in=answered_question_ids)
-                elif answer == 'false':
-                    queryset = queryset.exclude(question_id__in=answered_question_ids)
-
-            # 응답 데이터 생성
-            questions = [
-                {
-                    "question_id": question.question_id,
-                    "category": question.category,
-                    "sub_category": question.sub_category,
-                    "question_title": question.question_title,
-                    "bookmark_id": Bookmark.objects.filter(user=user, question=question).values_list('bookmark_id', flat=True).first(),
-                    "exercise_answer_id": ExerciseAnswer.objects.filter(user=user, question=question).values_list('exercise_answer_id', flat=True).first(),
-                }
-                for question in queryset
-            ]
-
-            # 결과를 캐시에 저장 (15분 동안 캐시)
-            cache.set(cache_key, questions, timeout=60 * 15)
+        # 응답 데이터 생성
+        questions = [
+            {
+                "question_id": question.question_id,
+                "category": question.category,
+                "sub_category": question.sub_category,
+                "question_title": question.question_title,
+                "bookmark_id": Bookmark.objects.filter(user=user, question=question).values_list('bookmark_id', flat=True).first(),
+                "exercise_answer_id": ExerciseAnswer.objects.filter(user=user, question=question).values_list('exercise_answer_id', flat=True).first(),
+            }
+            for question in queryset
+        ]
 
         return Response(questions)
+
 
 class QuestionDetailView(APIView):
     def get(self, request, question_id):
