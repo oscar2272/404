@@ -147,7 +147,11 @@ USE_TZ = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://10.0.2.2:8000",  # 플러터 앱이 동작하는 주소
+    "http://10.0.2.2:8000",  # 안드로이드 앱이 동작하는주소
+    "http://127.0.0.1:8000",  # 플러터 앱이 동작하는 주소
+    "https://port-0-interview-m33x64mke9ccf7ca.sel4.cloudtype.app",
+
+
 ]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
