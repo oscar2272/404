@@ -112,9 +112,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      userState.user!.nickname,
-                      style: TextStyle(fontSize: width * 26 / 430),
+                    SizedBox(
+                      width: width * 200 / 430,
+                      child: Text(
+                        userState.user!.nickname,
+                        style: TextStyle(fontSize: width * 26 / 430),
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                      ),
                     ),
                     SizedBox(height: height * 7 / 932),
                     Text(

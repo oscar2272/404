@@ -13,9 +13,10 @@ from django.contrib.sessions.models import Session
 import logging
 from django.db.models import Count
 logger = logging.getLogger(__name__)
+from interview.settings import get_env_variable
 
 load_dotenv()
-api_key = os.getenv('OPENAI_API_KEY')
+api_key = get_env_variable('OPENAI_API_KEY')
 client = openai.OpenAI(api_key=api_key)
 
 instruction1 = """

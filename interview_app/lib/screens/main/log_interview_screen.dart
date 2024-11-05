@@ -100,10 +100,22 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
     int choiceIndex = -1; // 선택된 테스트 변수 추가
     List<LogMockModels> logmock =
         await MockService.fetchExistingLogMockInterview();
+
+    // logmock이 비어있는 경우, 진행할 수 없음을 알리고 리턴
+    if (logmock.isEmpty) {
+      // 사용자에게 알림 표시 또는 다른 처리
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('진행할 수 있는 면접 기록이 없습니다.')),
+      );
+      return;
+    }
+
     logmock.sort((a, b) => b.round.compareTo(a.round));
     if (!mounted) {
       return;
     }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -594,11 +606,14 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                       labelStyle: TextStyle(fontSize: 16, color: Colors.blue),
                     ),
                     onSubmitted: (String value) {
-                      int index = int.tryParse(value) ?? -1;
-                      if (index >= 5 && index <= latestRound) {
-                        scrollToIndex(latestRound - index);
-                      } else if (index > 0 && index <= 4) {
-                        scrollToIndex(latestRound - 4);
+                      if (latestRound > 0) {
+                        // 기록이 있는지 확인
+                        int index = int.tryParse(value) ?? -1;
+                        if (index >= 5 && index <= latestRound) {
+                          scrollToIndex(latestRound - index);
+                        } else if (index > 0 && index <= 4) {
+                          scrollToIndex(latestRound - 4);
+                        }
                       }
                     },
                   ),
@@ -606,18 +621,24 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                 IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () {
-                    int index = int.tryParse(_searchController.text) ?? -1;
-                    if (index >= 5 && index <= latestRound) {
-                      scrollToIndex(latestRound - index);
-                    } else if (index > 0 && index <= 4) {
-                      scrollToIndex(latestRound - 4);
+                    if (latestRound > 0) {
+                      // 기록이 있는지 확인
+                      int index = int.tryParse(_searchController.text) ?? -1;
+                      if (index >= 5 && index <= latestRound) {
+                        scrollToIndex(latestRound - index);
+                      } else if (index > 0 && index <= 4) {
+                        scrollToIndex(latestRound - 4);
+                      }
                     }
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.keyboard_double_arrow_up_outlined),
                   onPressed: () {
-                    scrollToIndex(0);
+                    if (latestRound > 0) {
+                      // 기록이 있는지 확인
+                      scrollToIndex(0);
+                    }
                   },
                 ),
               ],

@@ -13,9 +13,10 @@ from rest_framework.decorators import api_view
 from dotenv import load_dotenv
 import os, openai
 from django.db.models import Q
+from interview.settings import get_env_variable
 
 load_dotenv()
-api_key = os.getenv('OPENAI_API_KEY')
+api_key = get_env_variable('OPENAI_API_KEY')
 client = openai.OpenAI(api_key=api_key)
 
 
