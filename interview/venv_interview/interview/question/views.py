@@ -19,13 +19,8 @@ class QuestionListView(APIView):
         bookmark = request.query_params.get('bookmark', None)
         answer = request.query_params.get('answer', None)
 
-        session_id = request.headers.get('Authorization')
-        print('session_id',session_id)
-        if session_id:
-            session_id = session_id.split(' ')[1]
-            session = get_object_or_404(Session, session_key=session_id)
-        else:
-            return Response({"error": "Authorization header is missing."}, status=400)
+        session_id = request.headers.get('Authorization').split(' ')[1]
+        session = get_object_or_404(Session, session_key=session_id)
         user_id = session.get_decoded().get('_auth_user_id')
         user = get_object_or_404(User, pk=user_id)
 
@@ -74,7 +69,9 @@ class QuestionListView(APIView):
             })
 
 
+
         return Response(response_data)
+
 
 
 class QuestionDetailView(APIView):

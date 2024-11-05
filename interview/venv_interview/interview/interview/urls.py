@@ -24,8 +24,6 @@ from django.views.static import serve
 
 urlpatterns = [
     path("admin/", admin.site.urls),
- #127.0.0.1/
-    path("questions", include("question.urls")),
     path("questions/", include("question.urls")),
     path("user/", include("user.urls")),
     path("exerciseAnswer/", include("exercise_answer.urls")),
