@@ -25,30 +25,35 @@ class QuestionListView(APIView):
         user_id = session.get_decoded().get('_auth_user_id')
         user = User.objects.get(pk=user_id)
 
+        # 기본 쿼리셋 설정
         queryset = Question.objects.all()
 
-        # 필터링
+        # 필터링 조건
+        filters = Q()
         if category:
-            queryset = queryset.filter(category=category)
+            filters &= Q(category=category)
         if sub_category:
             sub_category_list = sub_category.split(',')
-            queryset = queryset.filter(sub_category__in=sub_category_list)
+            filters &= Q(sub_category__in=sub_category_list)
 
         if bookmark:
             bookmark_ids = Bookmark.objects.filter(user=user).values_list('question_id', flat=True)
             if bookmark == 'true':
-                queryset = queryset.filter(question_id__in=bookmark_ids)
+                filters &= Q(question_id__in=bookmark_ids)
             elif bookmark == 'false':
-                queryset = queryset.exclude(question_id__in=bookmark_ids)
+                filters &= ~Q(question_id__in=bookmark_ids)
 
         if answer:
             answered_question_ids = ExerciseAnswer.objects.filter(user=user).values_list('question_id', flat=True)
             if answer == 'true':
-                queryset = queryset.filter(question_id__in=answered_question_ids)
+                filters &= Q(question_id__in=answered_question_ids)
             elif answer == 'false':
-                queryset = queryset.exclude(question_id__in=answered_question_ids)
+                filters &= ~Q(question_id__in=answered_question_ids)
 
-        # 북마크와 답변 정보를 사전으로 미리 로드
+        # 필터를 적용하여 queryset을 최종적으로 정의
+        queryset = queryset.filter(filters)
+
+        # 북마크 및 답변 정보를 미리 로드
         bookmark_info = {info['question_id']: info['bookmark_id'] for info in Bookmark.objects.filter(user=user).values('question_id', 'bookmark_id')}
         exercise_answers = {answer['question_id']: answer['exercise_answer_id'] for answer in ExerciseAnswer.objects.filter(user=user).values('question_id', 'exercise_answer_id')}
 
@@ -59,8 +64,8 @@ class QuestionListView(APIView):
                 "category": question.category,
                 "sub_category": question.sub_category,
                 "question_title": question.question_title,
-                "bookmark_id": bookmark_info.get(question.question_id, None),
-                "exercise_answer_id": exercise_answers.get(question.question_id, None)
+                "bookmark_id": bookmark_info.get(question.question_id),
+                "exercise_answer_id": exercise_answers.get(question.question_id)
             }
             for question in queryset
         ]
