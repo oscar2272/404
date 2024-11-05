@@ -7,62 +7,65 @@ from exercise_answer.models import ExerciseAnswer
 from question.models import Question
 from user.models import Bookmark, User
 from django.contrib.sessions.models import Session
+from django.core.cache import cache
 
 class QuestionListView(APIView):
     def get(self, request, *args, **kwargs):
         category = request.query_params.get('category', None)
         sub_category = request.query_params.get('subCategory', None)
         bookmark = request.query_params.get('bookmark', None)
-        answer = request.query_params.get('answer', None)  # 답변 여부 필터링 추가
+        answer = request.query_params.get('answer', None)
 
         session_id = request.headers.get('Authorization').split(' ')[1]
+        # 세션 및 사용자 정보 가져오기
         session = Session.objects.get(session_key=session_id)
         user_id = session.get_decoded().get('_auth_user_id')
         user = User.objects.get(pk=user_id)
 
-        queryset = Question.objects.all()
+        # 캐시 키 생성
+        cache_key = f'questions_{category}_{sub_category}_{bookmark}_{answer}'
+        questions = cache.get(cache_key)
 
-        if category:
-            queryset = queryset.filter(category=category)
-        if sub_category:
-            sub_category_list = sub_category.split(',')
-            queryset = queryset.filter(sub_category__in=sub_category_list)
+        if questions is None:
+            # 쿼리셋에 prefetch_related 적용
+            queryset = Question.objects.prefetch_related('bookmark_set', 'exerciseanswer_set').all()
 
-        if bookmark:
-            bookmark_ids = Bookmark.objects.filter(user=user).values_list('question_id', flat=True)
-            if bookmark == 'true':
-                queryset = queryset.filter(question_id__in=bookmark_ids)
-            elif bookmark == 'false':
-                queryset = queryset.exclude(question_id__in=bookmark_ids)
+            # 필터링 적용
+            if category:
+                queryset = queryset.filter(category=category)
+            if sub_category:
+                sub_category_list = sub_category.split(',')
+                queryset = queryset.filter(sub_category__in=sub_category_list)
+            if bookmark:
+                bookmark_ids = Bookmark.objects.filter(user=user).values_list('question_id', flat=True)
+                if bookmark == 'true':
+                    queryset = queryset.filter(question_id__in=bookmark_ids)
+                elif bookmark == 'false':
+                    queryset = queryset.exclude(question_id__in=bookmark_ids)
+            if answer:
+                answered_question_ids = ExerciseAnswer.objects.filter(user=user).values_list('question_id', flat=True)
+                if answer == 'true':
+                    queryset = queryset.filter(question_id__in=answered_question_ids)
+                elif answer == 'false':
+                    queryset = queryset.exclude(question_id__in=answered_question_ids)
 
-        # 사용자 답변에 대한 필터링 로직 추가
-        if answer:
-            answered_question_ids = ExerciseAnswer.objects.filter(user=user).values_list('question_id', flat=True)
-            if answer == 'true':
-                queryset = queryset.filter(question_id__in=answered_question_ids)
-            elif answer == 'false':
-                queryset = queryset.exclude(question_id__in=answered_question_ids)
+            # 응답 데이터 생성
+            questions = [
+                {
+                    "question_id": question.question_id,
+                    "category": question.category,
+                    "sub_category": question.sub_category,
+                    "question_title": question.question_title,
+                    "bookmark_id": Bookmark.objects.filter(user=user, question=question).values_list('bookmark_id', flat=True).first(),
+                    "exercise_answer_id": ExerciseAnswer.objects.filter(user=user, question=question).values_list('exercise_answer_id', flat=True).first(),
+                }
+                for question in queryset
+            ]
 
-        # 북마크 및 답변 정보를 함께 응답에 포함
-        bookmark_info = Bookmark.objects.filter(user=user).values('question_id', 'bookmark_id')
-        bookmark_info_dict = {info['question_id']: info['bookmark_id'] for info in bookmark_info}
+            # 결과를 캐시에 저장 (15분 동안 캐시)
+            cache.set(cache_key, questions, timeout=60 * 15)
 
-        exercise_answers = ExerciseAnswer.objects.filter(user=user).values('question_id', 'exercise_answer_id')
-        exercise_answer_dict = {answer['question_id']: answer['exercise_answer_id'] for answer in exercise_answers}
-
-        response_data = [
-            {
-                "question_id": question.question_id,
-                "category": question.category,
-                "sub_category": question.sub_category,
-                "question_title": question.question_title,
-                "bookmark_id": bookmark_info_dict.get(question.question_id, None),
-                "exercise_answer_id": exercise_answer_dict.get(question.question_id, None)  # 답변 여부를 추가
-            }
-            for question in queryset
-        ]
-
-        return Response(response_data)
+        return Response(questions)
 
 class QuestionDetailView(APIView):
     def get(self, request, question_id):
