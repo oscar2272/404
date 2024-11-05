@@ -1,0 +1,60 @@
+{
+    "version": "1.0",
+    "dataSet": {
+        "info": {
+            "date": "20230116",
+            "occupation": "ICT",
+            "channel": "MOCK",
+            "place": "ONLINE",
+            "gender": "MALE",
+            "ageRange": "45-54",
+            "experience": "NEW"
+        },
+        "question": {
+            "raw": {
+                "text": "지원자님께서 생각하실 때에 현대 사회에서는 없어서는 안 될 가장 중요하다고 생각하시는 직업이 있다면 어떤 직업인지 한 번 한 가지 골라서 말씀해 주시기 바랍니다",
+                "wordCount": 23
+            },
+            "emotion": [],
+            "intent": []
+        },
+        "answer": {
+            "raw": {
+                "text": "바로 컴퓨터 프로그래머입니다. 예전에는 블루 워커라고 해서 몸으로 움직이는 사람들이 많이 필요했습니다. 그때는 노동력이 거의 나라 또는 회사의 자산이었지만 이제는 그 노동력을 대체할 수 있는 빅데이타 에이아이 인공 지능들이 미친 듯이 쏟아져 나오고 있습니다. 공장 자동화 같은 것도 결국은 프로그래머가 운영하게 되는 것이고 사람은 관리자 한 두 명만 있으면 됩니다. 그래서 이제는 온라인 마케팅 디지털 마케팅 에이아이 그리고 딥 러닝 머신러닝을 공부할 수 있고 제대로 운영할 수 있는 프로그래머가 회사의 가장 큰 자산이라고 생각합니다. 요즘 은행에서도 예전에 은행에 업무만 보던 사람이 아니라 문과 출신을 뽑을 때도 최소한 소프트웨어 육 개월에서 일 년 정도를 교육 이수하거나 자격증을 딴 코딩을 할 줄 아는 문과 출신들을 뽑고 특히 보안이나 데이터 서버 또는 머신러닝을 운영할 수 있는 사람들 위주로 채용하고 있습니다. 이미 은행 및 금융권 모든 대기업에서도 팔십 퍼센트 이상이 컴퓨터 프로그래밍을 다룰 줄 알고 이해할 수 있는 사람이 회사에 적합한 자원이라고 하는 에이치알 팀들의 의견이 압도적입니다.",
+                "wordCount": 143
+            },
+            "emotion": [],
+            "intent": [
+                {
+                    "text": "",
+                    "expression": "",
+                    "category": "attitude"
+                }
+            ],
+            "summary": {
+                "text": "예전에는 노동력이 회사의 자산이었지만 이제는 노동력을 대체할 수 있는 빅데이타 에이아이 인공 지능들이 쏟아져 나오고 있습니다. 온라인 마케팅 디지털 마케팅 에이아이 그리고 딥 러닝을 공부할 수 있고 제대로 운영할 수 있는 프로그래머가 회사의 가장 큰 자산이라고 생각합니다.",
+                "wordCount": 37
+            }
+        }
+    },
+    "rawDataInfo": {
+        "question": {
+            "fileFormat": "wav",
+            "fileSize": 458638,
+            "duration": 14330,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/New/ckmk_q_ict_m_n_162847.wav"
+        },
+        "answer": {
+            "fileFormat": "wav",
+            "fileSize": 2652238,
+            "duration": 82880,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/New/ckmk_a_ict_m_n_162847.wav"
+        }
+    }
+}
