@@ -9,11 +9,9 @@ from user.models import Bookmark, User
 from django.contrib.sessions.models import Session
 from django.core.cache import cache
 
-import time
 
 class QuestionListView(APIView):
     def get(self, request, *args, **kwargs):
-        start_time = time.time()  # 시작 시간 기록
 
         # 쿼리 파라미터 가져오기
         category = request.query_params.get('category', None)
@@ -21,8 +19,13 @@ class QuestionListView(APIView):
         bookmark = request.query_params.get('bookmark', None)
         answer = request.query_params.get('answer', None)
 
-        session_id = request.headers.get('Authorization').split(' ')[1]
-        session = get_object_or_404(Session, session_key=session_id)
+        session_id = request.headers.get('Authorization')
+        print('session_id',session_id)
+        if session_id:
+            session_id = session_id.split(' ')[1]
+            session = get_object_or_404(Session, session_key=session_id)
+        else:
+            return Response({"error": "Authorization header is missing."}, status=400)
         user_id = session.get_decoded().get('_auth_user_id')
         user = get_object_or_404(User, pk=user_id)
 
@@ -70,9 +73,6 @@ class QuestionListView(APIView):
                 "exercise_answer_id": exercise_answer_dict.get(question.question_id, None)
             })
 
-        end_time = time.time()  # 종료 시간 기록
-        duration = end_time - start_time  # 소요 시간 계산
-        print(f"로딩 시간: {duration:.2f}초")  # 로그 출력
 
         return Response(response_data)
 
