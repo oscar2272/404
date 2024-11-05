@@ -1,0 +1,60 @@
+{
+    "version": "1.0",
+    "dataSet": {
+        "info": {
+            "date": "20230116",
+            "occupation": "ICT",
+            "channel": "MOCK",
+            "place": "ONLINE",
+            "gender": "MALE",
+            "ageRange": "45-54",
+            "experience": "NEW"
+        },
+        "question": {
+            "raw": {
+                "text": "본인이 전공하신 것을 직무에서 어떻게 활용할 수 있을까요",
+                "wordCount": 8
+            },
+            "emotion": [],
+            "intent": []
+        },
+        "answer": {
+            "raw": {
+                "text": "전공을 어떻게 직무에 써 활용할 수 있을까 라는 말씀은 저는 중국에서 일본어학을 전공을 했습니다. 중국에서 일본어학을 전공을 했기 때문에 중국어와 일본어는 자유자재로 구사할 수 있을 정도의 수준이 됩니다. 또한 제 전공 중에 일본어학뿐만이 아니라 아 비즈니스 어드미니스트레이션 경영학 부분 동도 도도 어 공부를 한 경험을 가지고 있습니다. 따라서 한국에서 돌아와서 어 입사할 때부터 해외 영업 특히 중국 지역 중화권 지역을 주로 담당을 했었습니다. 또한 신국 심나 광동성의 남방 지역 중에 광동성의 심청과 광동 동관을 중심으로 해서 지사장을 이 년 동안 역임을 했었구요. 그 지사장을 하는 동안에 신규 매출을 창출한 경험을 가지고 있습니다. 그 당시에 지사는 아무것도 없는 곳에서 제가 직접 사무소를 구하고 그 안에서 일할 인원들을 직접 체험을 하였으며 신규 그 인원들과 함께 로칼 영업을 진행을 해서 미팅을 주선하고 신규 매출까지 창출한 경험을 가지고 있기 때문에 그런 부분에 대해서는 경험을 가지고 있어서 가장 잘 할 수 있을 것이라 사료가 됩니다.",
+                "wordCount": 140
+            },
+            "emotion": [],
+            "intent": [
+                {
+                    "text": "",
+                    "expression": "",
+                    "category": "attitude"
+                }
+            ],
+            "summary": {
+                "text": "저는 중국에서 일본어학을 전공했고 비즈니스 어드미니스트레이션 경영학 부분도 공부를 했습니다. 그래서 입사할 때부터 해외 영업 특히 중국 지역 중화권 지역을 주로 담당했습니다. 또한 광동성의 심청과 광동 동관을 중심으로 해서 지사장을 이 년 동안 역임했고 신규 매출을 창출한 경험을 가지고 있습니다.",
+                "wordCount": 40
+            }
+        }
+    },
+    "rawDataInfo": {
+        "question": {
+            "fileFormat": "wav",
+            "fileSize": 266318,
+            "duration": 8320,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/New/ckmk_q_ict_m_n_65231.wav"
+        },
+        "answer": {
+            "fileFormat": "wav",
+            "fileSize": 2784398,
+            "duration": 87010,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/New/ckmk_a_ict_m_n_65231.wav"
+        }
+    }
+}
