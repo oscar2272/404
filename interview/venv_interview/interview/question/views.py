@@ -15,62 +15,55 @@ from django.shortcuts import get_object_or_404
 class QuestionListView(APIView):
     def get(self, request, *args, **kwargs):
 
-        # 쿼리 파라미터 가져오기
         category = request.query_params.get('category', None)
         sub_category = request.query_params.get('subCategory', None)
         bookmark = request.query_params.get('bookmark', None)
         answer = request.query_params.get('answer', None)
 
         session_id = request.headers.get('Authorization').split(' ')[1]
-        session = get_object_or_404(Session, session_key=session_id)
+        session = Session.objects.get(session_key=session_id)
         user_id = session.get_decoded().get('_auth_user_id')
-        user = get_object_or_404(User, pk=user_id)
+        user = User.objects.get(pk=user_id)
 
-        # 필터링 조건 생성
-        filter_conditions = Q()
+        queryset = Question.objects.all()
+
+        # 필터링
         if category:
-            filter_conditions &= Q(category=category)
+            queryset = queryset.filter(category=category)
         if sub_category:
             sub_category_list = sub_category.split(',')
-            filter_conditions &= Q(sub_category__in=sub_category_list)
+            queryset = queryset.filter(sub_category__in=sub_category_list)
 
-        # 질문 쿼리셋 최적화
-        queryset = Question.objects.filter(filter_conditions)
+        if bookmark:
+            bookmark_ids = Bookmark.objects.filter(user=user).values_list('question_id', flat=True)
+            if bookmark == 'true':
+                queryset = queryset.filter(question_id__in=bookmark_ids)
+            elif bookmark == 'false':
+                queryset = queryset.exclude(question_id__in=bookmark_ids)
 
-        # 북마크 처리
-        bookmark_ids = Bookmark.objects.filter(user=user).values_list('question_id', flat=True)
-        if bookmark == 'true':
-            queryset = queryset.filter(question_id__in=bookmark_ids)
-        elif bookmark == 'false':
-            queryset = queryset.exclude(question_id__in=bookmark_ids)
+        if answer:
+            answered_question_ids = ExerciseAnswer.objects.filter(user=user).values_list('question_id', flat=True)
+            if answer == 'true':
+                queryset = queryset.filter(question_id__in=answered_question_ids)
+            elif answer == 'false':
+                queryset = queryset.exclude(question_id__in=answered_question_ids)
 
-        # 답변 처리
-        answered_question_ids = ExerciseAnswer.objects.filter(user=user).values_list('question_id', flat=True)
-        if answer == 'true':
-            queryset = queryset.filter(question_id__in=answered_question_ids)
-        elif answer == 'false':
-            queryset = queryset.exclude(question_id__in=answered_question_ids)
-
-        # 미리 로드하여 쿼리 수를 줄임
-        bookmarks = Bookmark.objects.filter(user=user).values('question_id', 'bookmark_id')
-        exercise_answers = ExerciseAnswer.objects.filter(user=user).values('question_id', 'exercise_answer_id')
+        # 북마크와 답변 정보를 사전으로 미리 로드
+        bookmark_info = {info['question_id']: info['bookmark_id'] for info in Bookmark.objects.filter(user=user).values('question_id', 'bookmark_id')}
+        exercise_answers = {answer['question_id']: answer['exercise_answer_id'] for answer in ExerciseAnswer.objects.filter(user=user).values('question_id', 'exercise_answer_id')}
 
         # 응답 데이터 생성
-        response_data = []
-        bookmark_dict = {info['question_id']: info['bookmark_id'] for info in bookmarks}
-        exercise_answer_dict = {answer['question_id']: answer['exercise_answer_id'] for answer in exercise_answers}
-
-        for question in queryset:
-            response_data.append({
+        response_data = [
+            {
                 "question_id": question.question_id,
                 "category": question.category,
                 "sub_category": question.sub_category,
                 "question_title": question.question_title,
-                "bookmark_id": bookmark_dict.get(question.question_id, None),
-                "exercise_answer_id": exercise_answer_dict.get(question.question_id, None)
-            })
-
-
+                "bookmark_id": bookmark_info.get(question.question_id, None),
+                "exercise_answer_id": exercise_answers.get(question.question_id, None)
+            }
+            for question in queryset
+        ]
 
         return Response(response_data)
 
