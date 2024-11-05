@@ -108,7 +108,7 @@ DATABASES = {
         'NAME': get_env_variable('DB_NAME'),
         'USER': get_env_variable('DB_USER'),
         'PASSWORD': get_env_variable('DB_PASSWORD'),
-        'HOST': 'oscar2272',
+        'HOST': 'localhost',
         'PORT': get_env_variable('DB_PORT'),
     }
 }
