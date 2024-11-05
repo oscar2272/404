@@ -1,0 +1,60 @@
+{
+    "version": "1.0",
+    "dataSet": {
+        "info": {
+            "date": "20230116",
+            "occupation": "ICT",
+            "channel": "MOCK",
+            "place": "ONLINE",
+            "gender": "MALE",
+            "ageRange": "35-44",
+            "experience": "EXPERIENCED"
+        },
+        "question": {
+            "raw": {
+                "text": "지원자님께서 이제 일을 하시다 보면 분쟁이 발생할 수도 있는데 이제 지원자님만에 특별한 대처법이 있나요 있다면 어떤 건지 궁금합니다 말씀해 주세요",
+                "wordCount": 20
+            },
+            "emotion": [],
+            "intent": []
+        },
+        "answer": {
+            "raw": {
+                "text": "업무시분쟁이 발생했을 경우에는 아 일단 대화로 푸는 것이 가장 좋겠지만 실질적으로 대화가 굉장히 어려운 게 사실이잖아요. 아 각자 자기와 자기들의 주장을 한없이 펼칠 거기 때문에 그럴 때는 어 결국에는 그 롤 엔 리스펀시빌리티 그 알앤알을 알앤알 문서를 서로 같이 열어보고 그것을 보면서 명확하게 역할 분담을 해야 한다고 생각합니다. 여기서 알앤알이 쫌 더 부정확하게 명시가 되어 있다면 이것은 회사의 관리자들에게 결국에는 이게 대표님이 될 수도 있겠고 또는 시 최고 운영 책임자 최고 정보 관리 책임자 등들에게 조언을 구해서 알엔알을 좀 더 명확하 시 명확하게 시킬 수 있도록 한 후 그 업무 분쟁했던 상대방과 다시 한번 이야기를 나누는 게 맞다고 정확한 절차라고 생각합니다.",
+                "wordCount": 102
+            },
+            "emotion": [],
+            "intent": [
+                {
+                    "text": "",
+                    "expression": "",
+                    "category": "attitude"
+                }
+            ],
+            "summary": {
+                "text": "업무시 분쟁이 발생했을 경우에는 알앤알 문서를 서로 같이 열어보고 명확하게 역할 분담을 해야 한다고 생각합니다. 또 알엔알을 좀 더 명확하게 시킬 수 있도록 한 후 그 업무 분쟁했던 상대방과 다시 한번 이야기를 나누는 게 정확한 절차라고 생각합니다.",
+                "wordCount": 37
+            }
+        }
+    },
+    "rawDataInfo": {
+        "question": {
+            "fileFormat": "wav",
+            "fileSize": 535758,
+            "duration": 16740,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/Experienced/ckmk_q_ict_m_e_182618.wav"
+        },
+        "answer": {
+            "fileFormat": "wav",
+            "fileSize": 2137678,
+            "duration": 66800,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/Experienced/ckmk_a_ict_m_e_182618.wav"
+        }
+    }
+}

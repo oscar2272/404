@@ -1,0 +1,60 @@
+{
+    "version": "1.0",
+    "dataSet": {
+        "info": {
+            "date": "20230116",
+            "occupation": "ICT",
+            "channel": "MOCK",
+            "place": "ONLINE",
+            "gender": "MALE",
+            "ageRange": "-34",
+            "experience": "NEW"
+        },
+        "question": {
+            "raw": {
+                "text": "상사가 회사의 이익에 반하는 행동을 하는 것을 직접 목격하게 됐다고 가정 가정해 보겠습니다 지원자님께서는 그 때 어떻게 행동하실건가요",
+                "wordCount": 18
+            },
+            "emotion": [],
+            "intent": []
+        },
+        "answer": {
+            "raw": {
+                "text": "상사가 회사의 이익에 반하는 행동을 직접 목격한다면 아마 뭐 크게 다를 건 없겠고 그저 기분은 많이 안 좋을 것 같습니다. 저도 그것을 눈치채지 못했다 라고 하면 제 책임이라도 없을 텐데 이젠 저도 함부로 행동할 수 없는 상황이 된 겁니다. 그것을 보고 그냥 없던 일 척 지나갈 수도 없는 상황이 됐지 않겠습니까. 물론 어렴풋이 알게 됐다 라면 너무 좋을 것 같긴 합니다. 그분이 더 이상 회사의 이익에 반하는 비도덕적인 행동을 최대한 빨리 멈출 수 있도록 다양한 방식을 구상할 수 있기 때문이죠. 하지만 좁은 골방에서 하다가 저한테 들켰다 만약에 회사 돈을 빼는 걸 들켰다라든지 이렇게 된다면 단둘이 마주친다면 아 좀 조용히 해줘라든지 뭐 그런 당황을 한다든지 등등의 상황이 있지 않겠습니까. 많이 곤란할 것 같습니다. 최대한 빨리 이것을 멈출 수 있도록 해야겠죠. 제가 해코지를 당하든 어떻게 되든 말이죠. 최대한 일어나지 않는 일이어야겠습니다. 네 감사합니다.",
+                "wordCount": 131
+            },
+            "emotion": [],
+            "intent": [
+                {
+                    "text": "",
+                    "expression": "",
+                    "category": "attitude"
+                }
+            ],
+            "summary": {
+                "text": "회사 이익에 반하는 비도덕적인 행동을 더 이상 멈출 수 있도록 다양한 방식을 구상할 수 있지만, 좁은 골방에서 하다가 제게 들켰다면 단둘이 마주친다면 좀 조용히 해달라는 등의 상황이 있을 수 있으니 최대한 빨리 이것을 멈출 수 있게 해야 합니다.",
+                "wordCount": 38
+            }
+        }
+    },
+    "rawDataInfo": {
+        "question": {
+            "fileFormat": "wav",
+            "fileSize": 536718,
+            "duration": 16770,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/New/ckmk_q_ict_m_n_340775.wav"
+        },
+        "answer": {
+            "fileFormat": "wav",
+            "fileSize": 2780878,
+            "duration": 86900,
+            "samplingBit": 16,
+            "channelCount": 1,
+            "samplingRate": "16kHz",
+            "audioPath": "/Mock/05.ICT/Male/New/ckmk_a_ict_m_n_340775.wav"
+        }
+    }
+}
