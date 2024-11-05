@@ -7,7 +7,9 @@ from exercise_answer.models import ExerciseAnswer
 from question.models import Question
 from user.models import Bookmark, User
 from django.contrib.sessions.models import Session
-from django.core.cache import cache
+from django.db.models import Q
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
 
 class QuestionListView(APIView):
