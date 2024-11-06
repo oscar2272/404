@@ -10,7 +10,7 @@ from django.contrib.sessions.models import Session
 from rest_framework.decorators import api_view
 from dotenv import load_dotenv
 import os, openai
-from django.db.models import Q
+from django.db.models import Count,Q
 from log_mock_interview.serializers import MockInterviewAnswerSerializer
 from user.models import User
 from interview.settings import get_env_variable
@@ -189,10 +189,17 @@ def check_existing_mock_interview(request):
     # 진행 중인 면접을 찾는 필터
     ongoing_interviews = LogMockInterview.objects.filter(
         user=user,
-    ).filter(
+    ).annotate(num_mock_interviews=Count('mock_interviews'))  # mock_interviews의 개수 세기
+
+    # 필터 조건
+    ongoing_interviews = ongoing_interviews.filter(
         Q(mock_interviews__question_num=6, mock_interviews__feedback__isnull=True) |
         Q(mock_interviews__question_num=6, mock_interviews__feedback='')
+    ).filter(
+        Q(num_mock_interviews__lt=6) |  # mock_interviews 객체가 6개 미만인 경우
+        Q(mock_interviews__isnull=False)  # mock_interviews가 존재하는 경우
     ).distinct()
+
     print("ongoing_interviews: ", ongoing_interviews)
     if ongoing_interviews.exists():
         print("진행중인 면접이 있음")
