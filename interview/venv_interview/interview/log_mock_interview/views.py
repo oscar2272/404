@@ -178,8 +178,8 @@ def mock_interview_handler(request, log_mock_interview_id):
           print("Exception occurred:", str(e))
           traceback.print_exc()  # 전체 예외 내용 출력
           return JsonResponse({'error': str(e)}, status=500)
-# 진행중인 면접이 있는지 체크하는 메서드
 
+# 진행중인 면접이 있는지 체크하는 메서드
 def check_existing_mock_interview(request):
     session_id = request.headers.get('Authorization').split(' ')[1]
     session = Session.objects.get(session_key=session_id)
@@ -191,8 +191,8 @@ def check_existing_mock_interview(request):
     ongoing_interviews = LogMockInterview.objects.filter(
         user=user,
     ).filter(
-        Q(logmockinterviewanswer__question_num=6, logmockinterviewanswer__feedback__isnull=True) |
-        Q(logmockinterviewanswer__question_num=6, logmockinterviewanswer__feedback='')
+        Q(mockinterviewanswer_set__question_num=6, mockinterviewanswer_set__feedback__isnull=True) |
+        Q(mockinterviewanswer_set__question_num=6, mockinterviewanswer_set__feedback='')
     ).distinct()
     print("ongoing_interviews: ", ongoing_interviews)
     if ongoing_interviews.exists():
