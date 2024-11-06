@@ -11,9 +11,9 @@ from rest_framework.decorators import api_view
 from dotenv import load_dotenv
 import os, openai
 from django.db.models import Q
-from .serializers import MockInterviewAnswerSerializer
-from ..user.models import User
-from ..interview.settings import get_env_variable
+from log_mock_interview.serializers import MockInterviewAnswerSerializer
+from user.models import User
+from interview.settings import get_env_variable
 
 load_dotenv()
 api_key = get_env_variable('OPENAI_API_KEY')
