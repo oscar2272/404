@@ -14,7 +14,7 @@ from django.db.models import Q
 from log_mock_interview.serializers import MockInterviewAnswerSerializer
 from user.models import User
 from interview.settings import get_env_variable
-
+# ds
 load_dotenv()
 api_key = get_env_variable('OPENAI_API_KEY')
 client = openai.OpenAI(api_key=api_key)
