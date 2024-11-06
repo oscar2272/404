@@ -5,15 +5,15 @@ import re
 import traceback
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from log_mock_interview.serializers import MockInterviewAnswerSerializer
-from user.models import User
 from .models import Question, LogMockInterview, MockInterviewAnswer
 from django.contrib.sessions.models import Session
 from rest_framework.decorators import api_view
 from dotenv import load_dotenv
 import os, openai
 from django.db.models import Q
-from interview.settings import get_env_variable
+from .serializers import MockInterviewAnswerSerializer
+from ..user.models import User
+from ..interview.settings import get_env_variable
 
 load_dotenv()
 api_key = get_env_variable('OPENAI_API_KEY')
@@ -187,14 +187,16 @@ def check_existing_mock_interview(request):
     user = User.objects.get(pk=user_id)
 
     # 진행 중인 면접을 찾는 필터
+    print("user: ", user)
     ongoing_interviews = LogMockInterview.objects.filter(
         user=user,
     ).filter(
         Q(logmockinterviewanswer__question_num=6, logmockinterviewanswer__feedback__isnull=True) |
         Q(logmockinterviewanswer__question_num=6, logmockinterviewanswer__feedback='')
     ).distinct()
-
+    print("ongoing_interviews: ", ongoing_interviews)
     if ongoing_interviews.exists():
+        print("진행중인 면접이 있음")
         # 진행 중인 면접 리스트 반환
         interview_list = [{
             'log_mock_interview_id': interview.log_mock_interview_id,
