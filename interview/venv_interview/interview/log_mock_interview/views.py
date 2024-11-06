@@ -191,17 +191,18 @@ def check_existing_mock_interview(request):
         user=user,
     ).annotate(num_mock_interviews=Count('mock_interviews'))  # mock_interviews의 개수 세기
 
+    # 진행 중인 면접을 찾는 필터
+    ongoing_interviews = LogMockInterview.objects.filter(
+        user=user,
+    ).annotate(num_mock_interviews=Count('mock_interviews'))  # mock_interviews의 개수 세기
+
     # 필터 조건
     ongoing_interviews = ongoing_interviews.filter(
         Q(mock_interviews__question_num=6, mock_interviews__feedback__isnull=True) |
-        Q(mock_interviews__question_num=6, mock_interviews__feedback='')  # feedback이 null 또는 빈 문자열
-    ).filter(
-        num_mock_interviews__lt=6  # mock_interviews 객체가 6개 미만인 경우
+        Q(mock_interviews__question_num=6, mock_interviews__feedback='') |
+        Q(num_mock_interviews__lt=6)  # mock_interviews 객체가 6개 미만인 경우
     ).distinct()
-
-    print("ongoing_interviews: ", ongoing_interviews)
     if ongoing_interviews.exists():
-        print("진행중인 면접이 있음")
         # 진행 중인 면접 리스트 반환
         interview_list = [{
             'log_mock_interview_id': interview.log_mock_interview_id,
