@@ -179,23 +179,20 @@ def mock_interview_handler(request, log_mock_interview_id):
           traceback.print_exc()  # 전체 예외 내용 출력
           return JsonResponse({'error': str(e)}, status=500)
 # 진행중인 면접이 있는지 체크하는 메서드
+
 def check_existing_mock_interview(request):
     session_id = request.headers.get('Authorization').split(' ')[1]
     session = Session.objects.get(session_key=session_id)
     user_id = session.get_decoded().get('_auth_user_id')
     user = User.objects.get(pk=user_id)
 
+    # 진행 중인 면접을 찾는 필터
     ongoing_interviews = LogMockInterview.objects.filter(
         user=user,
     ).filter(
-        Q(relevance=0) | Q(relevance__isnull=True),
-        Q(awareness__isnull=True) | Q(awareness=0),
-        Q(clarity__isnull=True) | Q(clarity=0),
-        Q(depth__isnull=True) | Q(depth=0),
-        Q(logic__isnull=True) | Q(logic=0),
-    )
-
-
+        Q(logmockinterviewanswer__question_num=6, logmockinterviewanswer__feedback__isnull=True) |
+        Q(logmockinterviewanswer__question_num=6, logmockinterviewanswer__feedback='')
+    ).distinct()
 
     if ongoing_interviews.exists():
         # 진행 중인 면접 리스트 반환
@@ -267,6 +264,7 @@ def delete_user_answers(request, log_mock_interview_id):
       interview.depth=0
       interview.logic=0
       interview.relevance=0
+      interview.save()
       # 해당 면접의 모든 사용자 답변의 피드백과 답변 ""로 업데이트
       MockInterviewAnswer.objects.filter(log_mock_interview_id=interview).update(answer='', feedback='')
 
