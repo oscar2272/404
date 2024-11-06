@@ -196,8 +196,7 @@ def check_existing_mock_interview(request):
         Q(mock_interviews__question_num=6, mock_interviews__feedback__isnull=True) |
         Q(mock_interviews__question_num=6, mock_interviews__feedback='')
     ).filter(
-        Q(num_mock_interviews__lt=6) |  # mock_interviews 객체가 6개 미만인 경우
-        Q(mock_interviews__isnull=False)  # mock_interviews가 존재하는 경우
+        Q(num_mock_interviews__lt=6)  # mock_interviews 객체가 6개 미만인 경우
     ).distinct()
 
     print("ongoing_interviews: ", ongoing_interviews)
