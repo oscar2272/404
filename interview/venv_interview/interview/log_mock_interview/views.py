@@ -185,22 +185,13 @@ def check_existing_mock_interview(request):
     session = Session.objects.get(session_key=session_id)
     user_id = session.get_decoded().get('_auth_user_id')
     user = User.objects.get(pk=user_id)
-    #테스트용
-    ongoing_interviews = LogMockInterview.objects.filter(user=user)
-    print("기본 필터링:", ongoing_interviews)
-
-    ongoing_interviews = ongoing_interviews.filter(
-        mockinterviewanswer_set__question_num=6
-    )
-    print("question_num=6 필터링:", ongoing_interviews)
-    ########################################################
 
     # 진행 중인 면접을 찾는 필터
     ongoing_interviews = LogMockInterview.objects.filter(
         user=user,
     ).filter(
-        Q(mockinterviewanswer_set__question_num=6, mockinterviewanswer_set__feedback__isnull=True) |
-        Q(mockinterviewanswer_set__question_num=6, mockinterviewanswer_set__feedback='')
+        Q(mock_interviews__question_num=6, mock_interviews__feedback__isnull=True) |
+        Q(mock_interviews__question_num=6, mock_interviews__feedback='')
     ).distinct()
     print("ongoing_interviews: ", ongoing_interviews)
     if ongoing_interviews.exists():
