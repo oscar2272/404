@@ -23,7 +23,7 @@ class MockInterviewAnswer(models.Model):
         db_table = 'mock_interview_answer'
     mock_interview_answer_id = models.AutoField(primary_key=True)
     question_id = models.ForeignKey(Question,on_delete=models.CASCADE)
-    log_mock_interview_id = models.ForeignKey(LogMockInterview,on_delete=models.CASCADE)
+    log_mock_interview_id = models.ForeignKey(LogMockInterview,on_delete=models.CASCADE, related_name='mock_interviews')
     question_num = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(6)],blank=True,null=True)
     answer = models.TextField(blank=True,null=True)
     feedback = models.TextField(blank=True,null=True)
