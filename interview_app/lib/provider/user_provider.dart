@@ -9,8 +9,9 @@ import 'package:interview_app/models/user_model.dart';
 class UserProvider with ChangeNotifier {
   User? _user;
   User? get user => _user;
-  //static const String baseUrl = 'http://10.0.2.2:8000';
-  static const String baseUrl = "http://127.0.0.1:8000";
+  // static const String baseUrl = 'http://127.0.0.1:8000';
+  static const String baseUrl =
+      "https://port-0-interview-m33x64mke9ccf7ca.sel4.cloudtype.app";
   Future<String> signUp(String email, String nickname, String password) async {
     final url = Uri.parse('$baseUrl/user/signup/'); // API URL 수정 필요
     // CSRF 토큰 가져오기

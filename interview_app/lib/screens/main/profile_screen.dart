@@ -25,7 +25,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late String mostCategory = '';
   double _goalValue = 50.0;
   //static const baseUrl = "http://10.0.2.2:8000";
-  static const baseUrl = "http://127.0.0.1:8000";
+  static const String baseUrl =
+      "https://port-0-interview-m33x64mke9ccf7ca.sel4.cloudtype.app";
 
   final colorList = <Color>[
     const Color.fromARGB(255, 125, 166, 204),
@@ -75,15 +76,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _openUpdateProfilePage() async {
-    final result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const EditProfileScreen()),
-    );
-
-    if (result == true) {
-      // 프로필 업데이트가 성공했을 때
-      setState(() {});
-    }
+    ).then((value) {
+      if (value == true) {
+        setState(() {
+          userState.fetchUserData();
+        });
+      }
+    });
   }
 
   @override

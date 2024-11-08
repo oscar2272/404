@@ -27,12 +27,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isAutoLogin = false;
   bool _obscurePassword = true;
+  bool _isLoading = false; // 로딩 상태 변수 추가
 
   @override
   void initState() {
     super.initState();
     userState = Provider.of<UserProvider>(context, listen: false);
-
     _checkAutoLogin();
   }
 
@@ -52,15 +52,24 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
+    setState(() {
+      _isLoading = true; // 로그인 시작 시 로딩 상태를 true로 설정
+    });
+
     bool success = await userState.logIn(email, password);
     const prefs = FlutterSecureStorage();
     String? sessionId = await prefs.read(key: 'session_id');
     String? storedValue = await _storage.read(key: 'isPopup');
+
     if (!mounted) return;
+
+    setState(() {
+      _isLoading = false; // 로그인 후 로딩 상태를 false로 설정
+    });
+
     if (success) {
       if (storedValue == "true") {
         if (isAutoLogin) {
-          //자동로그인 체크후 로그인시
           await _storage.write(key: 'auto_login', value: sessionId);
         }
         if (!mounted) return;
@@ -74,7 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         if (isAutoLogin) {
-          //자동로그인 체크후 로그인시
           await _storage.write(key: 'auto_login', value: sessionId);
         }
         if (!mounted) return;
@@ -134,14 +142,15 @@ class _LoginScreenState extends State<LoginScreen> {
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, //키보드 over layout 방지
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFFf2f3f8),
       body: Padding(
         padding: EdgeInsets.only(
-            top: height * 100 / 932,
-            left: width * 60 / 430,
-            right: width * 60 / 430,
-            bottom: width * 50 / 932),
+          top: height * 100 / 932,
+          left: width * 60 / 430,
+          right: width * 60 / 430,
+          bottom: width * 50 / 932,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -175,17 +184,18 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: height * 60 / 932,
               child: TextFormField(
-                  maxLength: 20,
-                  focusNode: _emailFocusNode,
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    fillColor: Colors.white, // Color(0xFFf5f5f5),
-                    filled: true,
-                    border: OutlineInputBorder(),
-                    counterText: "",
-                  ),
-                  validator: (value) =>
-                      CheckValidate().validateEmail(_emailFocusNode, value!)),
+                maxLength: 20,
+                focusNode: _emailFocusNode,
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(),
+                  counterText: "",
+                ),
+                validator: (value) =>
+                    CheckValidate().validateEmail(_emailFocusNode, value!),
+              ),
             ),
             SizedBox(
               height: height * 10 / 932,
@@ -212,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 maxLength: 20,
                 focusNode: _passwordFocusNode,
                 decoration: InputDecoration(
-                  fillColor: Colors.white, //const Color(0xFFf5f5f5),
+                  fillColor: Colors.white,
                   filled: true,
                   border: const OutlineInputBorder(),
                   counterText: "",
@@ -245,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         isAutoLogin = newValue!;
                       });
                     },
-                    shape: const CircleBorder(), // 원형 체크박스
+                    shape: const CircleBorder(),
                   ),
                   Text(
                     '자동 로그인',
@@ -263,26 +273,27 @@ class _LoginScreenState extends State<LoginScreen> {
               height: height * 30 / 932,
             ),
             Center(
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(8.0), // 모서리 둥근 정도 설정
+              child: _isLoading // 로딩 상태에 따라 인디케이터 또는 버튼 표시
+                  ? const CircularProgressIndicator() // 로딩 중인 경우 인디케이터 표시
+                  : ElevatedButton(
+                      style: ButtonStyle(
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        backgroundColor: const WidgetStatePropertyAll(
+                            Color.fromARGB(255, 0, 0, 0)),
+                        minimumSize:
+                            WidgetStateProperty.all(const Size(250, 50)),
+                      ),
+                      onPressed: _login,
+                      child: Text(
+                        "로그인",
+                        style: TextStyle(
+                            color: Colors.white, fontSize: width * 18 / 430),
                       ),
                     ),
-                    backgroundColor: const WidgetStatePropertyAll(
-                        Color.fromARGB(255, 0, 0, 0)),
-                    minimumSize: WidgetStateProperty.all(
-                      const Size(250, 50),
-                    )),
-                onPressed: _login,
-                child: Text(
-                  "로그인",
-                  style: TextStyle(
-                      color: Colors.white, fontSize: width * 18 / 430),
-                ),
-              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

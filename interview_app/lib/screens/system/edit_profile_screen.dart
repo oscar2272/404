@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interview_app/provider/user_provider.dart';
+import 'package:interview_app/validator/check_validator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +15,13 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   //static const baseUrl = "http://10.0.2.2:8000";
-  static const baseUrl = "http://127.0.0.1:8000";
+  static const String baseUrl =
+      "https://port-0-interview-m33x64mke9ccf7ca.sel4.cloudtype.app";
+  late UserProvider userProvider;
+  String? _nicknameError;
+
+  final FocusNode _nicknameFocusNode = FocusNode();
+
   XFile? image;
   String? imageUrl;
   String? oldImageUrl;
@@ -95,9 +102,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  void _validateNickname(String value) {
+    setState(() {
+      _nicknameError =
+          CheckValidate().validateNickname(_nicknameFocusNode, value);
+    });
+  }
+
   Future<void> _updateProfile(String nickname, XFile? image, int userId) async {
-    message = await Provider.of<UserProvider>(context, listen: false)
-        .updateProfile(nickname, image, userId);
+    message = await userProvider.updateProfile(nickname, image, userId);
 
     if (!mounted) return;
     if (message == '성공') {
@@ -105,7 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('성공적으로 프로필을 업데이트했습니다.')),
       );
-      Navigator.pop(context, true); // 이전 화면으로 돌아감
+      Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
@@ -114,11 +127,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _resetProfile() async {
-    await Provider.of<UserProvider>(context, listen: false).resetImage(
-        Provider.of<UserProvider>(context, listen: false).user!.userId);
+    if (!mounted) return;
+    await userProvider.resetImage(userProvider.user!.userId);
+    if (!mounted) return;
     image = null;
-    // ignore: use_build_context_synchronously
-    await Provider.of<UserProvider>(context, listen: false).fetchUserData();
+    await userProvider.fetchUserData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userProvider = Provider.of<UserProvider>(context); // Provider 참조 저장
+    imageUrl = userProvider.user!.imageUrl;
+    oldImageUrl = userProvider.user!.imageUrl;
+    nicknameController.text = userProvider.user!.nickname;
   }
 
   void _showResetProfileDialog() {
@@ -150,18 +172,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: const Text('취소'),
                 ),
                 TextButton(
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    await _resetProfile();
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _resetProfile();
 
-                    // 비동기 작업 후에 UI를 업데이트하기 전에 mounted 체크
                     if (!mounted) return;
-
                     setState(() {
-                      imageUrl =
-                          Provider.of<UserProvider>(context, listen: false)
-                              .user!
-                              .imageUrl;
+                      imageUrl = userProvider.user!.imageUrl;
                     });
                   },
                   child: const Text('확인'),
@@ -180,6 +197,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     double width = MediaQuery.of(context).size.width;
     final TextEditingController emailController = TextEditingController(
         text: Provider.of<UserProvider>(context, listen: false).user!.email);
+
+    // 'Done' 버튼의 활성화 상태 결정
+    bool isNicknameValid =
+        _nicknameError == null && nicknameController.text.isNotEmpty;
+
     return Scaffold(
       appBar: AppBar(
         leadingWidth: width * 100 / 430,
@@ -201,14 +223,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           SizedBox(
             width: width * 100 / 430,
             child: TextButton(
-              onPressed: () {
-                _updateProfile(
-                    nicknameController.text,
-                    image,
-                    Provider.of<UserProvider>(context, listen: false)
-                        .user!
-                        .userId);
-              },
+              onPressed: isNicknameValid
+                  ? () {
+                      _updateProfile(nicknameController.text, image,
+                          userProvider.user!.userId);
+                    }
+                  : null, // 유효하지 않으면 null로 설정하여 비활성화
               child: const Text("Done"),
             ),
           ),
@@ -229,7 +249,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   CircleAvatar(
                     radius: width * 60 / 430, // 원의 반지름 설정
                     foregroundColor: Colors.black,
-
                     backgroundImage: image != null
                         ? FileImage(File(image!.path)) // 선택된 이미지
                         : NetworkImage('$baseUrl$imageUrl') as ImageProvider,
@@ -291,10 +310,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             SizedBox(height: height * 20 / 932),
             TextField(
               controller: nicknameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Nickname',
-                border: UnderlineInputBorder(),
+                border: const UnderlineInputBorder(),
+                counterText: "",
+                errorText: _nicknameError,
+                errorStyle: TextStyle(height: height * 1 / 932),
               ),
+              onChanged: _validateNickname,
             ),
             SizedBox(height: height * 20 / 932),
           ],

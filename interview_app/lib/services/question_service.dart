@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:interview_app/models/question_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:interview_app/provider/user_provider.dart';
-import 'package:provider/provider.dart';
+
 //import 'package:shared_preferences/shared_preferences.dart';
 
 class QuestionService {
-  //static const String baseUrl = 'http://10.0.2.2:8000';
+  // static const String baseUrl = 'http://127.0.0.1:8000';
 
-  static const String baseUrl = 'http://127.0.0.1:8000';
+  static const String baseUrl =
+      "https://port-0-interview-m33x64mke9ccf7ca.sel4.cloudtype.app";
+
   static const String question = "questions";
 
   Future<List<Question>> fetchQuestions(
@@ -24,8 +26,8 @@ class QuestionService {
       '$baseUrl/questions?category=$category&subCategory=$subCategory&bookmark=$bookmark&answer=$answer',
     );
 
-    final userState = Provider.of<UserProvider>(context, listen: false);
-    final sessionId = await userState.getSessionId();
+    const prefs = FlutterSecureStorage();
+    String? sessionId = await prefs.read(key: 'session_id');
 
     try {
       final response = await http.get(

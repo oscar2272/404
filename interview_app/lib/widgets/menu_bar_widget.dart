@@ -14,8 +14,9 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   late final UserProvider userState;
-  //static const baseUrl = "http://10.0.2.2:8000";
-  static const baseUrl = "http://127.0.0.1:8000";
+
+  static const String baseUrl =
+      "https://port-0-interview-m33x64mke9ccf7ca.sel4.cloudtype.app";
 
   @override
   void initState() {

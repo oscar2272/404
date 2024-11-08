@@ -18,24 +18,26 @@ class SettingQuota extends StatefulWidget {
 }
 
 class _SettingQuotaState extends State<SettingQuota> {
+  late UserProvider userState;
   @override
   void initState() {
     super.initState();
+    userState = Provider.of<UserProvider>(context, listen: false);
   }
 
   Future<void> settingQuota(BuildContext context, double goalvalue) async {
     try {
-      await Provider.of<UserProvider>(context, listen: false)
-          .settingQuota(widget.goalValue.toInt());
-      // ignore: use_build_context_synchronously
-      await Provider.of<UserProvider>(context, listen: false).fetchUserData();
-      // ignore: use_build_context_synchronously
+      await userState.settingQuota(widget.goalValue.toInt());
+
+      await userState.fetchUserData();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('목표량이 저장되었습니다.')),
       );
+
       widget.onClose(); // 저장 후 설정 창 닫기
     } catch (e) {
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('저장 실패: $e')),
       );

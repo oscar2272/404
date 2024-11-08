@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:interview_app/models/log_mock_models.dart';
 import 'package:interview_app/models/mock_interview_models.dart';
@@ -25,7 +27,9 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
       if (list.isNotEmpty) {
         averageScore = _calculateAverageScore(list);
       }
-      setState(() {}); // 평균 점수 계산 후 UI 갱신
+      if (mounted) {
+        setState(() {}); // 평균 점수 계산 후 UI 갱신
+      }
     });
   }
 
@@ -39,6 +43,9 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
           totalLength++;
         }
       }
+      if (totalLength == 0) {
+        return 0; // totalLength가 0일 때는 0을 반환
+      }
       averageScore = totalScore / totalLength;
       return averageScore;
     } else {
@@ -49,8 +56,15 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
   void deleteAllInterview() async {
     bool suc = await MockService.fetchDeleteAllMockInterview();
     if (suc == true) {
-      await MockService.fetchLogMockInterview();
-      setState(() {});
+      setState(() {
+        logMockInterview = MockService.fetchLogMockInterview();
+        logMockInterview.then((list) {
+          if (list.isNotEmpty) {
+            averageScore = _calculateAverageScore(list);
+            setState(() {});
+          }
+        });
+      });
     }
   }
 
@@ -100,7 +114,6 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
     int choiceIndex = -1; // 선택된 테스트 변수 추가
     List<LogMockModels> logmock =
         await MockService.fetchExistingLogMockInterview();
-
     // logmock이 비어있는 경우, 진행할 수 없음을 알리고 리턴
     if (logmock.isEmpty) {
       // 사용자에게 알림 표시 또는 다른 처리
@@ -178,21 +191,7 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                     child: const Text('진행'),
                     onPressed: () {
                       Navigator.of(context).pop();
-
-                      dynamic isChanged =
-                          continueInterview(context, choiceIndex, logmock);
-
-                      if (isChanged == true && mounted) {
-                        setState(() {
-                          logMockInterview =
-                              MockService.fetchLogMockInterview();
-                          logMockInterview.then((list) {
-                            if (list.isNotEmpty) {
-                              averageScore = _calculateAverageScore(list);
-                            }
-                          });
-                        });
-                      }
+                      continueInterview(context, choiceIndex, logmock);
                     },
                   ),
                 ],
@@ -204,7 +203,7 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
     );
   }
 
-  Future<dynamic> continueInterview(BuildContext context, int choiceIndex,
+  Future<void> continueInterview(BuildContext context, int choiceIndex,
       List<LogMockModels> logmock) async {
     final isChanged = await Navigator.push(
       context,
@@ -218,6 +217,18 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                 : logmock[choiceIndex].round),
       ),
     );
+    if (isChanged == true && mounted) {
+      setState(() {
+        logMockInterview = MockService.fetchLogMockInterview();
+        logMockInterview.then((list) {
+          if (list.isNotEmpty) {
+            averageScore = _calculateAverageScore(list);
+            setState(() {});
+          }
+        });
+      });
+    }
+
     return isChanged;
   }
 
@@ -229,7 +240,7 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
     // mounted 상태 확인
     if (!mounted) return;
 
-    await Navigator.push(
+    final isChanged = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => TestInterviewScreen(
@@ -238,15 +249,17 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
         ),
       ),
     );
-
-    setState(() {
-      logMockInterview = MockService.fetchLogMockInterview();
-      logMockInterview.then((list) {
-        if (list.isNotEmpty) {
-          averageScore = _calculateAverageScore(list);
-        }
+    if (mounted && isChanged == true) {
+      setState(() {
+        logMockInterview = MockService.fetchLogMockInterview();
+        logMockInterview.then((list) {
+          if (list.isNotEmpty) {
+            averageScore = _calculateAverageScore(list);
+            setState(() {});
+          }
+        });
       });
-    });
+    }
   }
 
   void scrollToIndex(int index) {
@@ -572,8 +585,10 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                                         MockService.fetchLogMockInterview();
                                     logMockInterview.then((list) {
                                       if (list.isNotEmpty) {
-                                        averageScore =
-                                            _calculateAverageScore(list);
+                                        setState(() {
+                                          averageScore =
+                                              _calculateAverageScore(list);
+                                        });
                                       }
                                     });
                                   });
@@ -607,7 +622,6 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                     ),
                     onSubmitted: (String value) {
                       if (latestRound > 0) {
-                        // 기록이 있는지 확인
                         int index = int.tryParse(value) ?? -1;
                         if (index >= 5 && index <= latestRound) {
                           scrollToIndex(latestRound - index);
@@ -622,7 +636,6 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                   icon: const Icon(Icons.search),
                   onPressed: () {
                     if (latestRound > 0) {
-                      // 기록이 있는지 확인
                       int index = int.tryParse(_searchController.text) ?? -1;
                       if (index >= 5 && index <= latestRound) {
                         scrollToIndex(latestRound - index);
@@ -636,7 +649,6 @@ class _LogInterviewScreenState extends State<LogInterviewScreen> {
                   icon: const Icon(Icons.keyboard_double_arrow_up_outlined),
                   onPressed: () {
                     if (latestRound > 0) {
-                      // 기록이 있는지 확인
                       scrollToIndex(0);
                     }
                   },

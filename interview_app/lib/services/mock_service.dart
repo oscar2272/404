@@ -6,9 +6,11 @@ import 'package:http/http.dart' as http;
 import 'package:interview_app/models/mock_interview_models.dart';
 
 class MockService {
-  //static const String baseUrl = 'http://10.0.2.2:8000';
+  //static const String baseUrl = 'http://127.0.0.1:8000';
 
-  static const String baseUrl = 'http://127.0.0.1:8000';
+  static const String baseUrl =
+      "https://port-0-interview-m33x64mke9ccf7ca.sel4.cloudtype.app";
+
   static const logmock = "logMockInterview";
   static const mock = 'mockInterviewAnswer';
 
@@ -249,7 +251,7 @@ class MockService {
         },
       );
 
-      if (response.statusCode == 204) {
+      if (response.statusCode == 200) {
         return true;
       } else {
         return false;

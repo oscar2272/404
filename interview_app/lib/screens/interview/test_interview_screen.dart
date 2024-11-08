@@ -53,6 +53,9 @@ class _TestInterviewScreenState extends State<TestInterviewScreen> {
   Future<List<MockInterviewModels>> getMockInterview(
       int logMockInterviewId) async {
     try {
+      setState(() {
+        isLoading = true; // 로딩 시작
+      });
       List<MockInterviewModels> mockInterviews =
           await MockService.fetchMockInterview(logMockInterviewId);
 
@@ -68,114 +71,106 @@ class _TestInterviewScreenState extends State<TestInterviewScreen> {
   }
 
   void getMessages(List<MockInterviewModels> mockInterviews) {
-    if (failed) {
-    } else {
-      mockInterviews.sort((a, b) => a.questionNum.compareTo(b.questionNum));
+    mockInterviews.sort((a, b) => a.questionNum.compareTo(b.questionNum));
 
-      //첫번째 질문만 하고 나왔을때 (length가 1이고 answer가 null인경우)
-      if ((mockInterviews.length == 1) && mockInterviews[0].answer == '') {
-        addMessage(
-          BubbleNormalWidget(
-            text: '1번째 질문입니다. ${mockInterviews[0].questionTitle}',
-            isSender: false,
-            color: const Color(0xFFE8E8EE),
-            tail: true,
-            textColor: Colors.black,
-          ),
-        );
-      } else if (mockInterviews.length == 6 && mockInterviews[5].answer == '') {
-        int index = 0;
-        for (int i = 0; i < 6; i++) {
-          if (mockInterviews[i].answer == "") {
-            index = i;
-          }
-        }
-        for (int i = 0; i < index; i++) {
-          addMessage(
-            BubbleNormalWidget(
-              text:
-                  '${mockInterviews[i].questionNum}번째 질문입니다. ${mockInterviews[i].questionTitle}',
-              isSender: false,
-              color: const Color(0xFFE8E8EE),
-              tail: true,
-              textColor: Colors.black,
-            ),
-          );
-          if (mockInterviews[i].answer.isNotEmpty) {
-            addMessage(
-              BubbleNormalWidget(
-                text: mockInterviews[i].answer,
-                isSender: true,
-                color: const Color(0xFF1B97F3),
-                tail: true,
-                textColor: Colors.white,
-              ),
-            );
-          }
-          if (index == 5) {
-            addMessage(
-              BubbleNormalWidget(
-                text: mockInterviews[index].feedback,
-                isSender: false,
-                color: const Color(0xFFE8E8EE),
-                tail: true,
-                textColor: Colors.black,
-              ),
-            );
-          }
-        }
-      } else if (mockInterviews.length == 6 &&
-          mockInterviews.every((interview) => interview.answer == "")) {
-        // 다시하기인경우
-
-        addMessage(
-          BubbleNormalWidget(
-            text: '1번째 질문입니다. ${mockInterviews[0].questionTitle}',
-            isSender: false,
-            color: const Color(0xFFE8E8EE),
-            tail: true,
-            textColor: Colors.black,
-          ),
-        );
-      } else {
-        for (int i = 0; i < mockInterviews.length; i++) {
-          addMessage(
-            BubbleNormalWidget(
-              text:
-                  '${mockInterviews[i].questionNum}번째 질문입니다. ${mockInterviews[i].questionTitle}',
-              isSender: false,
-              color: const Color(0xFFE8E8EE),
-              tail: true,
-              textColor: Colors.black,
-            ),
-          );
-          if (mockInterviews[i].answer.isNotEmpty) {
-            addMessage(
-              BubbleNormalWidget(
-                text: mockInterviews[i].answer,
-                isSender: true,
-                color: const Color(0xFF1B97F3),
-                tail: true,
-                textColor: Colors.white,
-              ),
-            );
-          }
-          if (i == 5) {
-            addMessage(
-              BubbleNormalWidget(
-                text: mockInterviews[i].feedback,
-                isSender: false,
-                color: const Color(0xFFE8E8EE),
-                tail: true,
-                textColor: Colors.black,
-              ),
-            );
-            return;
-          }
+    //첫번째 질문만 하고 나왔을때 (length가 1이고 answer가 null인 경우)
+    if ((mockInterviews.length == 1) && mockInterviews[0].answer == '') {
+      addMessage(
+        BubbleNormalWidget(
+          text: '1번째 질문입니다. ${mockInterviews[0].questionTitle}',
+          isSender: false,
+          color: const Color(0xFFE8E8EE),
+          tail: true,
+          textColor: Colors.black,
+        ),
+      );
+    } else if (mockInterviews.length == 6 && mockInterviews[5].answer == '') {
+      // 다시하기후 중간에 나왔을때
+      int index = 0;
+      for (int i = 0; i < 6; i++) {
+        if (mockInterviews[i].answer == "") {
+          index = i;
+          break;
         }
       }
-      updateUI();
+      for (int i = 0; i <= index; i++) {
+        addMessage(
+          BubbleNormalWidget(
+            text:
+                '${mockInterviews[i].questionNum}번째 질문입니다. ${mockInterviews[i].questionTitle}',
+            isSender: false,
+            color: const Color(0xFFE8E8EE),
+            tail: true,
+            textColor: Colors.black,
+          ),
+        );
+        if (mockInterviews[i].answer.isNotEmpty) {
+          addMessage(
+            BubbleNormalWidget(
+              text: mockInterviews[i].answer,
+              isSender: true,
+              color: const Color(0xFF1B97F3),
+              tail: true,
+              textColor: Colors.white,
+            ),
+          );
+        }
+        if (index == 5) {
+          addMessage(
+            BubbleNormalWidget(
+              text: mockInterviews[index].feedback,
+              isSender: false,
+              color: const Color(0xFFE8E8EE),
+              tail: true,
+              textColor: Colors.black,
+            ),
+          );
+        }
+      }
+    } else {
+      //일반적인 상황
+      for (int i = 0; i < mockInterviews.length; i++) {
+        addMessage(
+          BubbleNormalWidget(
+            text:
+                '${mockInterviews[i].questionNum}번째 질문입니다. ${mockInterviews[i].questionTitle}',
+            isSender: false,
+            color: const Color(0xFFE8E8EE),
+            tail: true,
+            textColor: Colors.black,
+          ),
+        );
+        if (mockInterviews[i].answer.isNotEmpty) {
+          addMessage(
+            BubbleNormalWidget(
+              text: mockInterviews[i].answer,
+              isSender: true,
+              color: const Color(0xFF1B97F3),
+              tail: true,
+              textColor: Colors.white,
+            ),
+          );
+        }
+        if (i == 5) {
+          addMessage(
+            BubbleNormalWidget(
+              text: mockInterviews[i].feedback,
+              isSender: false,
+              color: const Color(0xFFE8E8EE),
+              tail: true,
+              textColor: Colors.black,
+            ),
+          );
+          break;
+        }
+      }
     }
+
+    updateUI();
+
+    setState(() {
+      isLoading = false; // 로딩 종료
+    });
   }
 
   void addMessage(BubbleNormalWidget message) {
@@ -299,14 +294,15 @@ class _TestInterviewScreenState extends State<TestInterviewScreen> {
     });
   }
 
+  // 다시하기 버튼 클릭 시 호출
   void deleteUserMessage() async {
     bool del =
         await MockService.fetchDeleteUserMessage(widget.logMockInterviewId);
-
     if (del) {
       await MockService.fetchMockInterview(widget.logMockInterviewId);
 
       setState(() {
+        isAnsweredChanged = true;
         showRetryButton = false; // 다시 시도 버튼 숨기기
         for (int i = 0; i < 12; i++) {
           deleteMessage(); // 12번 반복

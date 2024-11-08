@@ -108,9 +108,11 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
   }
 
   void fetchOptions() async {
-    setState(() {
-      _isLoading = true; // 데이터 로딩 시작
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true; // 데이터 로딩 시작
+      });
+    }
 
     // 선택된 상위 카테고리
     String selectedUpperCategory = upperCategoryToLowerCategories.keys
@@ -157,9 +159,11 @@ class _InterviewListScreenState extends State<InterviewListScreen> {
     _currentQuestions = questions;
     _questionsController.add(questions);
 
-    setState(() {
-      _isLoading = false; // 데이터 로딩 완료
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false; // 데이터 로딩 완료
+      });
+    }
   }
 
   Future<void> _addBookmark(int questionId) async {
