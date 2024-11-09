@@ -256,4 +256,5 @@ class DeleteUserView(View):
         user_id = session.get_decoded().get('_auth_user_id')
         user = User.objects.get(pk=user_id)
         user.delete()
+
         return HttpResponse("회원탈퇴 성공")

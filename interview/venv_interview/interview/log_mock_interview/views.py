@@ -157,6 +157,7 @@ def mock_interview_handler(request, log_mock_interview_id):
 
 
     elif request.method == 'DELETE':
+
         # 면접 기록 삭제
         round_to_delete = log_mock_interview.round
         print("round_to_delete: ", round_to_delete)
@@ -253,11 +254,13 @@ def LogMock_handler(request):
 
       return JsonResponse({'interviews': interview_list})
     elif(request.method == 'DELETE'):
-        interviews = LogMockInterview.objects.all()
+        session_id = request.headers.get('Authorization').split(' ')[1]
+        session = Session.objects.get(session_key=session_id)
+        user_id = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=user_id)
+        interviews = LogMockInterview.objects.filter(user=user)
         interviews.delete()
         return JsonResponse({'message': '모의 면접 기록이 삭제되었습니다.'})
-
-
 
 
 
@@ -283,20 +286,7 @@ def delete_user_answers(request, log_mock_interview_id):
 
 
 
-# 모의면접기록 전체삭제하는 메서드
-@api_view(['DELETE'])
-def delete_mock_interview(request, log_mock_interview_id):
 
-    session_id = request.headers.get('Authorization').split(' ')[1]
-    session = Session.objects.get(session_key=session_id)
-    user_id = session.get_decoded().get('_auth_user_id')
-    user = User.objects.get(pk=user_id)
-    # 주어진 ID에 해당하는 면접 기록을 가져옵니다.
-    interview = get_object_or_404(LogMockInterview, pk=log_mock_interview_id,user=user)
-    # 면접 기록 삭제
-    interview.delete()
-
-    return JsonResponse({'message': '모의 면접 기록이 삭제되었습니다.'})
 
 
 instruction = """
