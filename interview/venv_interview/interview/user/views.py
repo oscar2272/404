@@ -257,4 +257,4 @@ class DeleteUserView(View):
         user = User.objects.get(pk=user_id)
         user.delete()
 
-        return HttpResponse("회원탈퇴 성공")
+        return HttpResponse("회원탈퇴 성공", status=204)
