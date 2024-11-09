@@ -7,7 +7,7 @@ urlpatterns = [
   path('bookmarks/<int:bookmark_id>/', views.remove_bookmark, name='bookmarks'),
   path('<int:user_id>/', UpdateProfileView.as_view(), name='UpdateProfileView'),
   path('<int:user_id>/image/', views.reset_image, name='image'),
-  path('delete/',views.DeleteUserView.as_view, name='delete_user'),
+  path('delete/',views.DeleteUserView.as_view(), name='delete_user'),
   path('quota/', views.setting_quota),
   path('data/', views.get_user_data, name='data'),
   path('signup/', views.signup, name='signup'),
