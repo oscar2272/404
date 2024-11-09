@@ -247,3 +247,13 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return HttpResponse("로그아웃 성공")
+
+#회원탈퇴 메서드
+class DeleteUserView(View):
+    def delete(self, request, *args, **kwargs):
+        session_id = request.headers.get('Authorization').split(' ')[1]
+        session = Session.objects.get(session_key=session_id)
+        user_id = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=user_id)
+        user.delete()
+        return HttpResponse("회원탈퇴 성공")
